@@ -7,8 +7,10 @@ import java.util.concurrent.Executors;
 
 import com.sun.net.httpserver.HttpServer;
 
+import fr.hyper.battleship.BattleshipGame;
+import fr.hyper.battleship.RandomGame;
+
 public class NavyServer implements Runnable {
-	public static final String OK = "OK";
 
 	private int port;
 
@@ -22,13 +24,13 @@ public class NavyServer implements Runnable {
 			InetSocketAddress address = new InetSocketAddress(port);
 			ExecutorService service = Executors.newFixedThreadPool(1);
 			HttpServer server = HttpServer.create(address, 0);
+			GameHandler handler = new GameHandler(new BattleshipGame(new RandomGame()));
 			server.setExecutor(service);
 			server.createContext("/ping", new PingHandler());
+			server.createContext("/api/game/", handler);
 			server.start();
-			while(true) {
-				
-			}
 		} catch (IOException e) {
+			System.err.println("Could not create server ! Cause : " + e.getLocalizedMessage());
 			e.printStackTrace();
 		}
 	}
