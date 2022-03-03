@@ -21,5 +21,6 @@ jobs:
       - run: |
          java -version
          echo $JAVA_HOME
-      - run: ./Navy/mvnw install
+         cd Navy
+      - run: ./mvnw install
       - uses: codecov/codecov-action@v1
