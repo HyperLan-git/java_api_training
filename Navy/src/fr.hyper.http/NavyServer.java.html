@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>NavyServer.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">NavyRunner (Feb 28, 2022 5:09:26 PM)</a> &gt; <a href="../../index.html" class="el_group">Navy</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">fr.hyper.http</a> &gt; <span class="el_source">NavyServer.java</span></div><h1>NavyServer.java</h1><pre class="source lang-java linenums">package fr.hyper.http;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import com.sun.net.httpserver.HttpServer;
+
+import fr.hyper.battleship.BattleshipGame;
+import fr.hyper.battleship.RandomGame;
+
+public class NavyServer implements Runnable {
+
+	private int port;
+
+<span class="nc" id="L17">	public NavyServer(int port) {</span>
+<span class="nc" id="L18">		this.port = port;</span>
+<span class="nc" id="L19">	}</span>
+
+	@Override
+	public void run() {
+		try {
+<span class="nc" id="L24">			InetSocketAddress address = new InetSocketAddress(port);</span>
+<span class="nc" id="L25">			ExecutorService service = Executors.newFixedThreadPool(1);</span>
+<span class="nc" id="L26">			HttpServer server = HttpServer.create(address, 0);</span>
+<span class="nc" id="L27">			GameHandler handler = new GameHandler(new BattleshipGame(new RandomGame()));</span>
+<span class="nc" id="L28">			server.setExecutor(service);</span>
+<span class="nc" id="L29">			server.createContext(&quot;/ping&quot;, new PingHandler());</span>
+<span class="nc" id="L30">			server.createContext(&quot;/api/game/&quot;, handler);</span>
+<span class="nc" id="L31">			server.start();</span>
+<span class="nc" id="L32">		} catch (IOException e) {</span>
+<span class="nc" id="L33">			System.err.println(&quot;Could not create server ! Cause : &quot; + e.getLocalizedMessage());</span>
+<span class="nc" id="L34">			e.printStackTrace();</span>
+		}
+<span class="nc" id="L36">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span>NavyRunner (Feb 28, 2022 5:09:26 PM)</div></body></html>

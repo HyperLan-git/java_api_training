@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>BattleshipGame.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">NavyRunner (Feb 28, 2022 5:09:26 PM)</a> &gt; <a href="../../index.html" class="el_group">Navy</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">fr.hyper.battleship</a> &gt; <span class="el_source">BattleshipGame.java</span></div><h1>BattleshipGame.java</h1><pre class="source lang-java linenums">package fr.hyper.battleship;
+
+import java.awt.Point;
+import java.util.HashMap;
+import java.util.Map;
+
+public class BattleshipGame {
+
+	public static final int SIZE = 10;
+
+<span class="fc" id="L11">	private final Map&lt;Point, Boolean&gt; radar = new HashMap&lt;&gt;();</span>
+
+<span class="fc" id="L13">	private Battleship[] fleet = null;</span>
+
+<span class="fc" id="L15">	private BattleshipProvider provider = new RandomGame();</span>
+
+<span class="fc" id="L17">	public boolean myTurn = false;</span>
+
+<span class="fc" id="L19">	public BattleshipGame() {}</span>
+
+<span class="fc" id="L21">	public BattleshipGame(BattleshipProvider provider) {</span>
+<span class="fc" id="L22">		this.provider = provider;</span>
+<span class="fc" id="L23">	}</span>
+
+<span class="fc" id="L25">	public BattleshipGame(Battleship[] fleet) {</span>
+<span class="fc" id="L26">		this.fleet = fleet;</span>
+<span class="fc" id="L27">	}</span>
+
+	public void attacking(int x, int y, boolean hit) {
+<span class="fc" id="L30">		myTurn = false;</span>
+<span class="fc" id="L31">		radar.put(new Point(x, y), hit);</span>
+<span class="fc" id="L32">	}</span>
+
+	public Battleship attacked(int x, int y) {
+<span class="fc bfc" id="L35" title="All 2 branches covered.">		for(Battleship ship : fleet) {</span>
+<span class="pc bpc" id="L36" title="1 of 4 branches missed.">			if(ship.alive() &amp;&amp; ship.attack(x, y))</span>
+<span class="fc" id="L37">				return ship;</span>
+		}
+<span class="fc" id="L39">		return null;</span>
+	}
+
+	public AttackResult getAttacked(int x, int y) {
+<span class="fc" id="L43">		Battleship attacked = attacked(x, y);</span>
+<span class="fc" id="L44">		myTurn = true;</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">		if(attacked == null)</span>
+<span class="fc" id="L46">			return AttackResult.MISS;</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">		return attacked.alive() ? AttackResult.HIT : AttackResult.SINK;</span>
+	}
+
+	public Map&lt;Point, Boolean&gt; getRadar() {
+<span class="fc" id="L51">		return radar;</span>
+	}
+
+	public int getShipsAlive() {
+<span class="fc" id="L55">		int i = 0;</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">		for(Battleship b : fleet)</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">			if(b.alive())</span>
+<span class="fc" id="L58">				i++;</span>
+<span class="fc" id="L59">		return i;</span>
+	}
+	
+	public Battleship[] getFleet() {
+<span class="fc" id="L63">		return this.fleet;</span>
+	}
+
+	public boolean hasLost() {
+<span class="fc bfc" id="L67" title="All 2 branches covered.">		for(Battleship b : fleet)</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">			if(b.alive())</span>
+<span class="fc" id="L69">				return false;</span>
+<span class="fc" id="L70">		return true;</span>
+	}
+
+	public void init() {
+<span class="fc bfc" id="L74" title="All 2 branches covered.">		if(fleet == null)</span>
+<span class="fc" id="L75">			fleet = provider.provide().toArray(new Battleship[0]);</span>
+<span class="fc" id="L76">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span>NavyRunner (Feb 28, 2022 5:09:26 PM)</div></body></html>

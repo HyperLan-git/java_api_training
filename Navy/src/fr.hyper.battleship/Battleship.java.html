@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Battleship.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">NavyRunner (Feb 28, 2022 5:09:26 PM)</a> &gt; <a href="../../index.html" class="el_group">Navy</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">fr.hyper.battleship</a> &gt; <span class="el_source">Battleship.java</span></div><h1>Battleship.java</h1><pre class="source lang-java linenums">package fr.hyper.battleship;
+
+public class Battleship {
+	private final String name;
+	private final int size;
+	private final boolean[] sunk;
+
+<span class="fc" id="L8">	private int x = 1, y = 1;</span>
+	private boolean vertical;
+
+	private boolean checkOOB() {
+<span class="pc bpc" id="L12" title="1 of 6 branches missed.">		return (vertical &amp;&amp; y + size &gt; BattleshipGame.SIZE + 1) ||</span>
+<span class="fc bfc" id="L13" title="All 4 branches covered.">				(!vertical &amp;&amp; x + size &gt; BattleshipGame.SIZE + 1) ||</span>
+<span class="pc bpc" id="L14" title="2 of 6 branches missed.">				x &lt;= 0 || y &lt;= 0 || x &gt; BattleshipGame.SIZE ||</span>
+<span class="fc" id="L15">				y &gt; BattleshipGame.SIZE;</span>
+	}
+
+<span class="fc" id="L18">	public Battleship(String name, int size) {</span>
+<span class="fc" id="L19">		this.name = name;</span>
+<span class="fc" id="L20">		this.size = size;</span>
+<span class="fc" id="L21">		this.sunk = new boolean[size];</span>
+<span class="fc" id="L22">	}</span>
+
+	public Battleship(String name, int size, int x, int y, boolean vertical) {
+<span class="fc" id="L25">		this(name, size);</span>
+<span class="fc" id="L26">		this.x = x;</span>
+<span class="fc" id="L27">		this.y = y;</span>
+<span class="fc" id="L28">		this.vertical = vertical;</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">		if(checkOOB())</span>
+<span class="fc" id="L30">			throw new IllegalArgumentException(&quot;Battleship out of bounds !&quot;);</span>
+<span class="fc" id="L31">	}</span>
+
+	public void setPosition(int x, int y, boolean vertical) {
+<span class="fc" id="L34">		int oldx = this.x,</span>
+<span class="fc" id="L35">				oldy = this.y;</span>
+<span class="fc" id="L36">		boolean oldvert = this.vertical;</span>
+<span class="fc" id="L37">		this.x = x;</span>
+<span class="fc" id="L38">		this.y = y;</span>
+<span class="fc" id="L39">		this.vertical = vertical;</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">		if(checkOOB()) {</span>
+<span class="fc" id="L41">			this.x = oldx;</span>
+<span class="fc" id="L42">			this.y = oldy;</span>
+<span class="fc" id="L43">			this.vertical = oldvert;</span>
+<span class="fc" id="L44">			throw new IllegalArgumentException(&quot;Battleship out of bounds !&quot;);</span>
+		}
+<span class="fc" id="L46">	}</span>
+
+	public int[][] getPositions() {
+<span class="fc" id="L49">		int[][] result = new int[size][2];</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">		for(int i = 0; i &lt; size; i++) {</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">			result[i][0] = x + ((vertical) ? 0 : i);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">			result[i][1] = y + ((vertical) ? i : 0);</span>
+		}
+<span class="fc" id="L54">		return result;</span>
+	}
+
+	public int[][] getAlivePositions() {
+<span class="fc" id="L58">		int[][] result = new int[size][2];</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">		for(int i = 0; i &lt; size; i++) {</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">			if (sunk[i]) {</span>
+<span class="fc" id="L61">				result[i][0] = -1;</span>
+<span class="fc" id="L62">				result[i][1] = -1;</span>
+<span class="fc" id="L63">				continue;</span>
+			}
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">			result[i][0] = x + ((vertical) ? 0 : i);</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">			result[i][1] = y + ((vertical) ? i : 0);</span>
+		}
+<span class="fc" id="L68">		return result;</span>
+	}
+
+	public boolean alive() {
+<span class="fc bfc" id="L72" title="All 2 branches covered.">		for(boolean b : sunk)</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">			if(!b)</span>
+<span class="fc" id="L74">				return true;</span>
+<span class="fc" id="L75">		return false;</span>
+	}
+
+	private int getTile(int x, int y) {
+<span class="fc" id="L79">		int dx = x - this.x, dy = y - this.y;</span>
+<span class="pc bpc" id="L80" title="2 of 8 branches missed.">		if((vertical &amp;&amp; (dx != 0 || dy &lt; 0 || dy &gt;= size)) ||</span>
+<span class="pc bpc" id="L81" title="2 of 8 branches missed.">				(!vertical &amp;&amp; (dy != 0 || dy &lt; 0 || dy &gt;= size)))</span>
+<span class="fc" id="L82">			return -1;</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">		if(!vertical)</span>
+<span class="fc" id="L84">			return x - this.x;</span>
+<span class="fc" id="L85">		return y - this.y;</span>
+	}
+
+	public boolean isAlive(int x, int y) {
+<span class="fc" id="L89">		int i = getTile(x, y);</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">		if (i == -1)</span>
+<span class="fc" id="L91">			throw new IllegalArgumentException(&quot;Not a tile occupied by this boat !&quot;);</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">		return !sunk[i];</span>
+	}
+
+	public boolean attack(int x, int y) {
+<span class="fc" id="L96">		int i = getTile(x, y);</span>
+<span class="pc bpc" id="L97" title="1 of 4 branches missed.">		if (i &lt; 0 || i &gt;= this.size)</span>
+<span class="fc" id="L98">			return false;</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">		boolean ret = !sunk[i];</span>
+<span class="fc" id="L100">		sunk[i] = true;</span>
+<span class="fc" id="L101">		return ret;</span>
+	}
+
+	public String getName() {
+<span class="fc" id="L105">		return name;</span>
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+<span class="fc bfc" id="L110" title="All 2 branches covered.">		if (!(obj instanceof Battleship)) return false;</span>
+<span class="fc" id="L111">		Battleship other = (Battleship) obj;</span>
+<span class="pc bpc" id="L112" title="2 of 4 branches missed.">		return other.x == this.x &amp;&amp; other.y == this.y &amp;&amp;</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">				other.vertical == this.vertical &amp;&amp;</span>
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">				other.name == this.name;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span>NavyRunner (Feb 28, 2022 5:09:26 PM)</div></body></html>
