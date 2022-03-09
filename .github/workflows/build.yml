@@ -2,8 +2,6 @@ name: Build
 
 on: push
 
-token: 70067b4f-c288-4a7c-9279-844c56c71cb6
-
 jobs:
   build:
     name: Build

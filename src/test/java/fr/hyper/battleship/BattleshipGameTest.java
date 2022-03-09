@@ -1,6 +1,6 @@
 package fr.hyper.battleship;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,9 +10,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class BattleshipGameTest {
 	private InputStream inputStreamOf(final String input) {
@@ -22,7 +21,7 @@ public class BattleshipGameTest {
 	private BattleshipGame testGame;
 
 	@Test
-	@Before
+	@BeforeEach
 	public void constructors() {
 		System.setIn(inputStreamOf("y\nA1\ny\nB1\nn\nG5\ny\nA7\nn\nI10\n"));
 		BattleshipGame game = new BattleshipGame(new UserGame());
@@ -34,7 +33,7 @@ public class BattleshipGameTest {
 		expected[4] = new Battleship("Destroyer", 2, 9, 10, false);
 		game.init();
 		Battleship[] fleet = game.getFleet();
-		Assert.assertArrayEquals(fleet, expected);
+		assertArrayEquals(fleet, expected);
 
 		fleet = new Battleship[] {
 				new Battleship("lonely", 3, 5, 7, true)
