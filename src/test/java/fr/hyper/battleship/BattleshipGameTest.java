@@ -23,7 +23,7 @@ public class BattleshipGameTest {
 	@Test
 	@BeforeEach
 	public void constructors() {
-		System.setIn(inputStreamOf("y\nA1\ny\nB1\nn\nG5\ny\nA7\nn\nI10\n"));
+		System.setIn(inputStreamOf("y\nA12\ny\n\ny\nAA\ny\nA1\ny\nB1\nn\nG5\ny\nA7\nn\nI10\n"));
 		BattleshipGame game = new BattleshipGame(new UserGame());
 		Battleship[] expected = new Battleship[5];
 		expected[0] = new Battleship("Carrier", 5, 1, 1, true);

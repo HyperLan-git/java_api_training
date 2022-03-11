@@ -31,7 +31,7 @@ public class GameHandler implements HttpHandler {
 			"ff?", "Why sink your boats when you've already hit rock bottom?", "ESM pow !"};
 	private final UUID id = UUID.randomUUID();
 
-	public BattleshipGame game = null;
+	public final BattleshipGame game;
 
 	public GameHandler(BattleshipGame game) {
 		this.game = game;

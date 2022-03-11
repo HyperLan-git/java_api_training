@@ -12,16 +12,12 @@ public class UserGame implements BattleshipProvider {
 			return null;
 		int x = str.charAt(0) - 'A';
 		x++;
-		if (x <= 0 || x > BattleshipGame.SIZE)
-			return null;
 		int y = -1;
 		try {
 			y = Integer.valueOf(str.substring(1));
 		} catch (NumberFormatException e) {
 			return null;
 		}
-		if (y <= 0 || y > BattleshipGame.SIZE)
-			return null;
 		return new int[] {x, y};
 	}
 
