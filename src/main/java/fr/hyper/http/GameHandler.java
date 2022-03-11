@@ -66,8 +66,7 @@ public class GameHandler implements HttpHandler {
 
 			if(!str.getBuffer().isEmpty())
 				request = new JSONObject(str.toString());
-			str.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		return request;

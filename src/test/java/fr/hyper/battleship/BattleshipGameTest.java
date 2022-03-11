@@ -6,24 +6,22 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.Point;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.Charset;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
-public class BattleshipGameTest {
-	private InputStream inputStreamOf(final String input) {
-		return new ByteArrayInputStream(input.getBytes(Charset.forName("UTF-8")));
-	}
+import fr.hyper.http.mock.MockUtils;
 
-	private BattleshipGame testGame;
+public class BattleshipGameTest {
+
+	public static BattleshipGame testGame;
 
 	@Test
 	@BeforeEach
+	@Order(1)
 	public void constructors() {
-		System.setIn(inputStreamOf("y\nA12\ny\n\ny\nAA\ny\nA1\ny\nB1\nn\nG5\ny\nA7\nn\nI10\n"));
+		System.setIn(MockUtils.inputStreamOf("y\nA12\ny\n\ny\nAA\ny\nA1\ny\nB1\nn\nG5\ny\nA7\nn\nI10\n"));
 		BattleshipGame game = new BattleshipGame(new UserGame());
 		Battleship[] expected = new Battleship[5];
 		expected[0] = new Battleship("Carrier", 5, 1, 1, true);
