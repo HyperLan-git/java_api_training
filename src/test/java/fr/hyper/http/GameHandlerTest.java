@@ -3,11 +3,11 @@ package fr.hyper.http;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Map;
+
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
@@ -40,5 +40,13 @@ public class GameHandlerTest {
 		assertEquals(obj.optString("test"), "lol");
 		assertEquals(obj.optString("aze"), "1");
 		assertNull(GameHandler.decodeRequest(new HttpExchangeMock(MockUtils.inputStreamOf("\"{}{}didi\"eeeeeeeeeeeee"))));
+	}
+	
+	@Test
+	public void test_url_decoding() {
+		Map<String, String> pairs = GameHandler.getQueryMap("a=aBc123&watch=rickroll");
+		assertTrue(pairs.containsKey("a") && pairs.containsKey("watch"));
+		assertEquals(pairs.get("a"), "aBc123");
+		assertEquals(pairs.get("watch"), "rickroll");
 	}
 }

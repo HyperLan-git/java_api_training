@@ -12,9 +12,16 @@ import com.sun.net.httpserver.HttpPrincipal;
 
 public class HttpExchangeMock extends HttpExchange {
 	private InputStream requestBody;
+	private String url;
 	
 	public HttpExchangeMock(InputStream requestBody) {
 		this.requestBody = requestBody;
+	}
+	
+
+	public HttpExchangeMock(InputStream requestBody, String url) {
+		this.requestBody = requestBody;
+		this.url = url;
 	}
 
 	@Override
