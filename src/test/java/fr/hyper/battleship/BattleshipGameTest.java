@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.Point;
 
-import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import fr.hyper.http.mock.MockUtils;
@@ -17,7 +17,7 @@ public class BattleshipGameTest {
 	public static BattleshipGame testGame;
 
 	@Test
-	@Order(0)
+	@BeforeEach
 	public void constructors() {
 		System.setIn(MockUtils.inputStreamOf("y\nA12\ny\n\ny\nAA\ny\nA1\ny\nB1\nn\nG5\ny\nA7\nn\nI10\n"));
 		BattleshipGame game = new BattleshipGame(new UserGame());
@@ -42,7 +42,6 @@ public class BattleshipGameTest {
 	}
 	
 	@Test
-	@Order(2)
 	public void getAttackedAndLose() { // Me sad when lose :(
 		assertEquals(testGame.getShipsAlive(), 1);
 		assertFalse(testGame.myTurn);

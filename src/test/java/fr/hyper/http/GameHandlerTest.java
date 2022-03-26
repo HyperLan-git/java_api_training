@@ -13,8 +13,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
+import fr.hyper.battleship.Battleship;
 import fr.hyper.battleship.BattleshipGame;
-import fr.hyper.battleship.BattleshipGameTest;
 import fr.hyper.http.mock.HttpExchangeMock;
 import fr.hyper.http.mock.MockUtils;
 import fr.hyper.http.mock.PlayerMock;
@@ -25,9 +25,11 @@ public class GameHandlerTest {
 
 	@Test
 	@BeforeEach
-	@Order(1)
 	public void constructor() {
-		BattleshipGame game = BattleshipGameTest.testGame;
+		Battleship[] fleet = new Battleship[] {
+				new Battleship("lonely", 3, 5, 7, true)
+		};
+		BattleshipGame game = new BattleshipGame(fleet);
 		player = new PlayerMock();
 		handler = new GameHandler(game, player);
 		assertEquals(handler.game, game);
@@ -53,14 +55,14 @@ public class GameHandlerTest {
 		assertEquals(pairs.get("a"), "aBc123");
 		assertEquals(pairs.get("watch"), "dQw4w9WgXcQ");
 	}
-	
+
 	@Test
-	@Order(3)
 	public void test_start_request() {
 		try {
 			HttpExchangeMock mock = new HttpExchangeMock(
 					MockUtils.inputStreamOf("{\"id\":\"testid\",\"message\":\"hello\",\"url\":\"testurl\"}"),
 					"GET", "api/game/start");
+			System.out.println(handler);
 			handler.handle(mock);
 			mock = new HttpExchangeMock(
 					MockUtils.inputStreamOf("{\"id\":\"testid\",\"message\":\"hello\",\"url\":\"testurl\"}"),
