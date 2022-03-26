@@ -136,7 +136,7 @@ public class GameHandler implements HttpHandler {
 		System.out.println("Sending start : " + answer.toString());
 		System.out.println("url = " + myURL);
 		HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create("http://" + adversaryURL + "/api/game/start"))
+				.uri(URI.create(adversaryURL + "/api/game/start"))
 				.setHeader("Accept", "application/json")
 				.setHeader("Content-Type", "application/json")
 				.POST(BodyPublishers.ofString(answer.toString()))
@@ -233,7 +233,7 @@ public class GameHandler implements HttpHandler {
 		HttpRequest request = HttpRequest.newBuilder()
 				.setHeader("Accept", "application/json")
 				.setHeader("Content-Type", "application/json")
-				.uri(URI.create("http://" + adversaryURL + "/api/game/fire?cell=" +
+				.uri(URI.create(adversaryURL + "/api/game/fire?cell=" +
 						c + y))
 				.version(Version.HTTP_1_1)
 				.GET()

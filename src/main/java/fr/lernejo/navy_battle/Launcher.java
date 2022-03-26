@@ -5,6 +5,7 @@ import fr.hyper.http.NavyServer;
 
 public class Launcher {
 	public static void main(String[] args) {
+		System.out.println(args.length);
 		if(args.length < 1) {
 			System.out.println("Port needed !");
 			return;
