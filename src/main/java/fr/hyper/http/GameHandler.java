@@ -2,6 +2,7 @@ package fr.hyper.http;
 
 import java.awt.Point;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
@@ -71,19 +72,20 @@ public class GameHandler implements HttpHandler {
 		return map;  
 	}
 
-	public static final JSONObject decodeRequest(HttpExchange exchange) {
+	public static final JSONObject decodeRequest(InputStream requestBody) {
 		JSONObject request = null;
-		InputStreamReader reader = new InputStreamReader(exchange.getRequestBody());
+		InputStreamReader reader = new InputStreamReader(requestBody);
 		try (StringWriter str = new StringWriter()) {
 			reader.transferTo(str);
-			reader.close();
 			System.out.println("Reading : " + str.toString());
 
 			if(!str.getBuffer().isEmpty())
 				request = new JSONObject(str.toString());
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
+		System.out.println("request = " + request);
 		return request;
 	}
 
@@ -109,10 +111,12 @@ public class GameHandler implements HttpHandler {
 		return answer;
 	}
 
-	private JSONObject startRequest(HttpExchange exchange) {
-		if (!exchange.getRequestMethod().contentEquals("POST"))
+	private JSONObject startRequest(HttpExchange exchange, JSONObject request) {
+		if (!exchange.getRequestMethod().contentEquals("POST") ||
+				request.optString("url") == null)
 			return null;
 		this.done.set(false);
+		this.url.set(request.optString("url"));
 		this.game.init();
 		JSONObject answer = new JSONObject();
 		InetSocketAddress addr = exchange.getHttpContext()
@@ -153,7 +157,7 @@ public class GameHandler implements HttpHandler {
 		try {
 			JSONObject request = null;
 			if(exchange.getRequestBody().available() > 0)
-				request = decodeRequest(exchange);
+				request = decodeRequest(exchange.getRequestBody());
 			String uri = exchange.getRequestURI().getPath().replace("api/game/", "");
 			if(uri.contains("?"))
 				uri = uri.split("?")[0];
@@ -195,7 +199,7 @@ public class GameHandler implements HttpHandler {
 			case "/start":
 				System.out.println("Recieved a start request");
 				System.out.println(request);
-				response = startRequest(exchange);
+				response = startRequest(exchange, request);
 				if(request.optString("url") == null || response == null) {
 					System.out.println("But was invalid");
 					OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());

@@ -41,10 +41,10 @@ public class GameHandlerTest {
 		assertTrue(GameHandler.contains(array, "test"));
 		assertFalse(GameHandler.contains(array, "yuiop"));
 
-		JSONObject obj = GameHandler.decodeRequest(new HttpExchangeMock(MockUtils.inputStreamOf("{\"test\":\"lol\", \"aze\":1}"), "GET"));
+		JSONObject obj = GameHandler.decodeRequest(MockUtils.inputStreamOf("{\"test\":\"lol\", \"aze\":1}"));
 		assertEquals(obj.optString("test"), "lol");
 		assertEquals(obj.optString("aze"), "1");
-		assertNull(GameHandler.decodeRequest(new HttpExchangeMock(MockUtils.inputStreamOf("\"{}{}didi\"eeeeeeeeeeeee"), "GET")));
+		assertNull(GameHandler.decodeRequest(MockUtils.inputStreamOf("\"{}{}didi\"eeeeeeeeeeeee")));
 	}
 	
 	@Test
