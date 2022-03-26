@@ -8,31 +8,33 @@ import java.util.concurrent.Executors;
 import com.sun.net.httpserver.HttpServer;
 
 import fr.hyper.battleship.BattleshipGame;
+import fr.hyper.battleship.ComputerPlayer;
 import fr.hyper.battleship.RandomGame;
 
 public class NavyServer implements Runnable {
 
-	private int port;
+	private final HttpServer server;
 
 	public NavyServer(int port) {
-		this.port = port;
-	}
-
-	@Override
-	public void run() {
+		InetSocketAddress address = new InetSocketAddress(port);
+		HttpServer s = null;
 		try {
-			InetSocketAddress address = new InetSocketAddress(port);
-			ExecutorService service = Executors.newFixedThreadPool(1);
-			HttpServer server = HttpServer.create(address, 0);
-			GameHandler handler = new GameHandler(new BattleshipGame(new RandomGame()));
-			server.setExecutor(service);
-			server.createContext("/ping", new PingHandler());
-			server.createContext("/api/game/", handler);
-			server.start();
+			s = HttpServer.create(address, 0);
 		} catch (IOException e) {
 			System.err.println("Could not create server ! Cause : " + e.getLocalizedMessage());
 			e.printStackTrace();
 		}
+		server = s;
+	}
+
+	@Override
+	public void run() {
+		ExecutorService service = Executors.newFixedThreadPool(1);
+		GameHandler handler = new GameHandler(new BattleshipGame(new RandomGame()), new ComputerPlayer());
+		server.setExecutor(service);
+		server.createContext("/ping", new PingHandler());
+		server.createContext("/api/game/", handler);
+		server.start();
 	}
 
 }

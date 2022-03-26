@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.Point;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -18,8 +20,7 @@ public class BattleshipGameTest {
 	public static BattleshipGame testGame;
 
 	@Test
-	@BeforeEach
-	@Order(1)
+	@Order(0)
 	public void constructors() {
 		System.setIn(MockUtils.inputStreamOf("y\nA12\ny\n\ny\nAA\ny\nA1\ny\nB1\nn\nG5\ny\nA7\nn\nI10\n"));
 		BattleshipGame game = new BattleshipGame(new UserGame());
@@ -44,15 +45,16 @@ public class BattleshipGameTest {
 	}
 	
 	@Test
+	@Order(2)
 	public void getAttackedAndLose() { // Me sad when lose :(
 		assertEquals(testGame.getShipsAlive(), 1);
 		assertFalse(testGame.myTurn);
-		assertEquals(testGame.getAttacked(1, 1), AttackResult.MISS);
+		assertEquals(testGame.getAttacked(new Point(1, 1)), AttackResult.MISS);
 		assertTrue(testGame.myTurn);
-		assertEquals(testGame.getAttacked(5, 7), AttackResult.HIT);
-		assertEquals(testGame.getAttacked(5, 8), AttackResult.HIT);
+		assertEquals(testGame.getAttacked(new Point(5, 7)), AttackResult.HIT);
+		assertEquals(testGame.getAttacked(new Point(5, 8)), AttackResult.HIT);
 		assertFalse(testGame.hasLost()); // happy (hardcore)
-		assertEquals(testGame.getAttacked(5, 9), AttackResult.SINK);
+		assertEquals(testGame.getAttacked(new Point(5, 9)), AttackResult.SINK);
 		assertTrue(testGame.hasLost()); // sadge
 		assertEquals(testGame.getShipsAlive(), 0);
 	}
@@ -60,7 +62,7 @@ public class BattleshipGameTest {
 	@Test
 	public void testRadar() {
 		assertEquals(testGame.getRadar().size(), 0);
-		testGame.attacking(1, 1, true);
+		testGame.attacking(new Point(1, 1), true);
 		assertEquals(testGame.getRadar().size(), 1);
 		assertEquals(testGame.getRadar().get(new Point(1, 1)), true);
 	}

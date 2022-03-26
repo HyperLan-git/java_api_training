@@ -17,16 +17,19 @@ import fr.hyper.battleship.BattleshipGame;
 import fr.hyper.battleship.BattleshipGameTest;
 import fr.hyper.http.mock.HttpExchangeMock;
 import fr.hyper.http.mock.MockUtils;
+import fr.hyper.http.mock.PlayerMock;
 
 public class GameHandlerTest {
 	private GameHandler handler;
+	private PlayerMock player;
 
 	@Test
 	@BeforeEach
-	@Order(2)
+	@Order(1)
 	public void constructor() {
 		BattleshipGame game = BattleshipGameTest.testGame;
-		handler = new GameHandler(game);
+		player = new PlayerMock();
+		handler = new GameHandler(game, player);
 		assertEquals(handler.game, game);
 	}
 
@@ -36,17 +39,36 @@ public class GameHandlerTest {
 		assertTrue(GameHandler.contains(array, "test"));
 		assertFalse(GameHandler.contains(array, "yuiop"));
 
-		JSONObject obj = GameHandler.decodeRequest(new HttpExchangeMock(MockUtils.inputStreamOf("{\"test\":\"lol\", \"aze\":1}")));
+		JSONObject obj = GameHandler.decodeRequest(new HttpExchangeMock(MockUtils.inputStreamOf("{\"test\":\"lol\", \"aze\":1}"), "GET"));
 		assertEquals(obj.optString("test"), "lol");
 		assertEquals(obj.optString("aze"), "1");
-		assertNull(GameHandler.decodeRequest(new HttpExchangeMock(MockUtils.inputStreamOf("\"{}{}didi\"eeeeeeeeeeeee"))));
+		assertNull(GameHandler.decodeRequest(new HttpExchangeMock(MockUtils.inputStreamOf("\"{}{}didi\"eeeeeeeeeeeee"), "GET")));
 	}
 	
 	@Test
 	public void test_url_decoding() {
-		Map<String, String> pairs = GameHandler.getQueryMap("a=aBc123&watch=rickroll");
+		Map<String, String> pairs = GameHandler.getQueryMap("a=aBc123&watch=dQw4w9WgXcQ");
 		assertTrue(pairs.containsKey("a") && pairs.containsKey("watch"));
 		assertEquals(pairs.get("a"), "aBc123");
-		assertEquals(pairs.get("watch"), "rickroll");
+		assertEquals(pairs.get("watch"), "dQw4w9WgXcQ");
+	}
+	
+	@Test
+	@Order(3)
+	public void test_start_request() {
+		try {
+			HttpExchangeMock mock = new HttpExchangeMock(
+					MockUtils.inputStreamOf("{\"id\":\"testid\",\"message\":\"hello\",\"url\":\"testurl\"}"),
+					"GET", "api/game/start");
+			handler.handle(mock);
+			mock = new HttpExchangeMock(
+					MockUtils.inputStreamOf("{\"id\":\"testid\",\"message\":\"hello\",\"url\":\"testurl\"}"),
+					"POST", "api/game/start");
+			handler.handle(mock);
+			JSONObject obj = new JSONObject(mock.getResponse());
+			assertTrue(obj.optString("id") != null && obj.optString("message") != null && obj.optString("url") != null);
+		} catch (Exception e) {
+			throw new IllegalStateException("Exception !", e);
+		}
 	}
 }

@@ -47,7 +47,6 @@ public class UserGame implements BattleshipProvider {
 				}
 			} while (p);
 		}
-		sc.close();
 		return (Collection<Battleship>) Arrays.asList(fleet);
 	}
 

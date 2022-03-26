@@ -26,21 +26,21 @@ public class BattleshipGame {
 		this.fleet = fleet;
 	}
 
-	public void attacking(int x, int y, boolean hit) {
+	public void attacking(Point p, boolean hit) {
 		myTurn = false;
-		radar.put(new Point(x, y), hit);
+		radar.put(p, hit);
 	}
 
-	public Battleship attacked(int x, int y) {
+	public Battleship attacked(Point p) {
 		for(Battleship ship : fleet) {
-			if(ship.alive() && ship.attack(x, y))
+			if(ship.alive() && ship.attack(p.x, p.y))
 				return ship;
 		}
 		return null;
 	}
 
-	public AttackResult getAttacked(int x, int y) {
-		Battleship attacked = attacked(x, y);
+	public AttackResult getAttacked(Point p) {
+		Battleship attacked = attacked(p);
 		myTurn = true;
 		if(attacked == null)
 			return AttackResult.MISS;
