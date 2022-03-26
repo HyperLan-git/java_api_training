@@ -112,11 +112,9 @@ public class GameHandler implements HttpHandler {
 	}
 
 	private JSONObject startRequest(HttpExchange exchange, JSONObject request) {
-		if (!exchange.getRequestMethod().contentEquals("POST") ||
-				request.optString("url") == null)
+		if (!exchange.getRequestMethod().contentEquals("POST"))
 			return null;
 		this.done.set(false);
-		this.url.set(request.optString("url"));
 		this.game.init();
 		JSONObject answer = new JSONObject();
 		InetSocketAddress addr = exchange.getHttpContext()
@@ -130,7 +128,6 @@ public class GameHandler implements HttpHandler {
 
 	public void sendStartRequest(String adversaryURL, String myURL) {
 		this.done.set(false);
-		this.url.set(adversaryURL);
 		this.game.init();
 		JSONObject answer = new JSONObject();
 		answer.put("id", id.toString());
@@ -164,6 +161,7 @@ public class GameHandler implements HttpHandler {
 			JSONObject answer = answer(exchange, request, uri);
 			System.out.println("Answering with : " + answer);
 			if(answer != null) {
+				System.out.println("respcode = " + exchange.getResponseCode());
 				if(exchange.getResponseCode() == -1)
 					exchange.sendResponseHeaders(HttpURLConnection.HTTP_ACCEPTED,
 							answer.toString().length());
@@ -209,7 +207,6 @@ public class GameHandler implements HttpHandler {
 					exchange.close();
 					return null;
 				}
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_ACCEPTED, response.toString().length());
 				return response;
 			case "fire":
 			case "/fire":
