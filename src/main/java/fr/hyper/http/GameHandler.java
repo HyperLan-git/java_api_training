@@ -86,7 +86,7 @@ public class GameHandler implements HttpHandler {
 		}
 		return request;
 	}
-	
+
 	public boolean done() {
 		return done.get();
 	}
@@ -161,7 +161,7 @@ public class GameHandler implements HttpHandler {
 			System.out.println("Answering with : " + answer);
 			if(answer != null) {
 				if(exchange.getResponseCode() == -1)
-					exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
+					exchange.sendResponseHeaders(HttpURLConnection.HTTP_ACCEPTED,
 							answer.toString().length());
 				exchange.getResponseBody().write(answer.toString().getBytes());
 				exchange.close();
