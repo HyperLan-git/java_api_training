@@ -120,7 +120,7 @@ public class GameHandler implements HttpHandler {
 		answer.put("id", id.toString());
 		int rand = (int) (Math.random() * START_MESSAGE.length);
 		answer.put("message", START_MESSAGE[rand]);
-		answer.put("url", "[" + addr.getHostString() + "]:" + addr.getPort());
+		answer.put("url", "http://[" + addr.getHostString() + "]:" + addr.getPort());
 		return answer;
 	}
 
@@ -136,7 +136,7 @@ public class GameHandler implements HttpHandler {
 		System.out.println("Sending start : " + answer.toString());
 		System.out.println("url = " + myURL);
 		HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create("http://" + adversaryURL + "/api/game/start"))
+				.uri(URI.create(adversaryURL + "/api/game/start"))
 				.setHeader("Accept", "application/json")
 				.setHeader("Content-Type", "application/json")
 				.POST(BodyPublishers.ofString(answer.toString()))
@@ -181,7 +181,7 @@ public class GameHandler implements HttpHandler {
 				sendShootRequest(url.get(), p.x, p.y);
 			} else {
 				System.out.println("Lost :/");
-				done.set(true);
+				while(!done.get()) done.set(true);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -229,7 +229,7 @@ public class GameHandler implements HttpHandler {
 	public void sendShootRequest(String adversaryURL, int x, int y) {
 		char c = 'A' - 1;
 		c += x;
-		System.out.println("Shooting");
+		System.out.println("Shooting to " + adversaryURL);
 		HttpRequest request = HttpRequest.newBuilder()
 				.setHeader("Accept", "application/json")
 				.setHeader("Content-Type", "application/json")
@@ -248,11 +248,11 @@ public class GameHandler implements HttpHandler {
 			Thread.sleep(1);
 			if(!obj.getBoolean("shipLeft")) {
 				System.out.println("You won !!!");
-				done.set(true);
+				while(!done.get()) done.set(true);
 			}
 		} catch (IOException | InterruptedException e) {
 			System.out.println("Game end myself (no dont do that)");
-			done.set(true);
+			while(!done.get()) done.set(true);
 		}
 	}
 

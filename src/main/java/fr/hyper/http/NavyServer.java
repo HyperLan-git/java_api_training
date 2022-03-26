@@ -36,7 +36,9 @@ public class NavyServer implements Runnable {
 		server.createContext("/api/game/", handler);
 		server.start();
 		while(!handler.done());
+		service.shutdown();
 		server.stop(0);
+		Thread.currentThread().interrupt();
 	}
 
 }

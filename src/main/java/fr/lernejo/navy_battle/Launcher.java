@@ -19,7 +19,10 @@ public class Launcher {
 		}
 		Thread t = new Thread(new NavyServer(Integer.valueOf(args[0])));
 		t.start();
-		while(t.isAlive())
-			;
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			System.err.print(e);
+		}
 	}
 }
