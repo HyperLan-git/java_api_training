@@ -136,7 +136,7 @@ public class GameHandler implements HttpHandler {
 		System.out.println("Sending start : " + answer.toString());
 		System.out.println("url = " + myURL);
 		HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create(adversaryURL + "/api/game/start"))
+				.uri(URI.create("http://" + adversaryURL + "/api/game/start"))
 				.setHeader("Accept", "application/json")
 				.setHeader("Content-Type", "application/json")
 				.POST(BodyPublishers.ofString(answer.toString()))
