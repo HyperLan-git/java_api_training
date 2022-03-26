@@ -44,6 +44,7 @@ public class GameHandler implements HttpHandler {
 
 	private HttpClient client = HttpClient.newHttpClient();
 	private final AtomicReference<String> url = new AtomicReference<>();
+	private final AtomicReference<Boolean> done = new AtomicReference<>(false);
 
 	public GameHandler(BattleshipGame game, Player p) {
 		this.game = game;
@@ -85,6 +86,10 @@ public class GameHandler implements HttpHandler {
 		}
 		return request;
 	}
+	
+	public boolean done() {
+		return done.get();
+	}
 
 	private JSONObject shootRequest(HttpExchange exchange, JSONObject request) {
 		if (!exchange.getRequestMethod().contentEquals("GET") ||
@@ -105,9 +110,9 @@ public class GameHandler implements HttpHandler {
 	}
 
 	private JSONObject startRequest(HttpExchange exchange) {
-		System.out.println(exchange.getRequestMethod());
 		if (!exchange.getRequestMethod().contentEquals("POST"))
 			return null;
+		this.done.set(false);
 		this.game.init();
 		JSONObject answer = new JSONObject();
 		InetSocketAddress addr = exchange.getHttpContext()
@@ -120,6 +125,7 @@ public class GameHandler implements HttpHandler {
 	}
 
 	public void sendStartRequest(String adversaryURL, String myURL) {
+		this.done.set(false);
 		this.url.set(adversaryURL);
 		this.game.init();
 		JSONObject answer = new JSONObject();
@@ -175,7 +181,7 @@ public class GameHandler implements HttpHandler {
 				sendShootRequest(url.get(), p.x, p.y);
 			} else {
 				System.out.println("Lost :/");
-				return;
+				done.set(true);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -242,9 +248,11 @@ public class GameHandler implements HttpHandler {
 			Thread.sleep(1);
 			if(!obj.getBoolean("shipLeft")) {
 				System.out.println("You won !!!");
+				done.set(true);
 			}
 		} catch (IOException | InterruptedException e) {
 			System.out.println("Game end myself (no dont do that)");
+			done.set(true);
 		}
 	}
 

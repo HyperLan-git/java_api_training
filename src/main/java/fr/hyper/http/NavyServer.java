@@ -35,6 +35,8 @@ public class NavyServer implements Runnable {
 		server.createContext("/ping", new PingHandler());
 		server.createContext("/api/game/", handler);
 		server.start();
+		while(!handler.done());
+		server.stop(0);
 	}
 
 }

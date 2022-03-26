@@ -31,6 +31,7 @@ public class GameHandlerTest {
 		player = new PlayerMock();
 		handler = new GameHandler(game, player);
 		assertEquals(handler.game, game);
+		assertFalse(handler.done());
 	}
 
 	@Test

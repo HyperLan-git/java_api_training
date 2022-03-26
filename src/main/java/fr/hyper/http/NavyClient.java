@@ -37,6 +37,8 @@ public class NavyClient implements Runnable {
 		s.createContext("/api/game/", handler);
 		s.start();
 		handler.sendStartRequest(address, "[" + s.getAddress().getHostName() + "]:" + s.getAddress().getPort());
+		while(!handler.done());
+		s.stop(0);
 	}
 
 }
