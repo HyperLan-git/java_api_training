@@ -18,6 +18,7 @@ public class Launcher {
 			e.printStackTrace();
 		}
 		System.out.println(args.length);
+		System.out.println("threads = " + Thread.activeCount());
 		if(args.length < 1) {
 			System.out.println("Port needed !");
 			return;
@@ -26,7 +27,9 @@ public class Launcher {
 			System.out.println("arg=" + arg);
 		if (args.length > 1) {
 			Thread t2 = new Thread(new NavyClient(Integer.valueOf(args[0]), args[1]));
+			System.out.println("threads1 = " + Thread.activeCount());
 			t2.start();
+			System.out.println("threads2 = " + Thread.activeCount());
 			try {
 				t2.join();
 			} catch (InterruptedException e) {

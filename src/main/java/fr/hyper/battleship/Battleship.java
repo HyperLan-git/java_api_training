@@ -5,8 +5,8 @@ public class Battleship {
 	private final int size;
 	private final boolean[] sunk;
 
-	private int x = 1, y = 1;
-	private boolean vertical;
+	private final int x, y;
+	private final boolean vertical;
 
 	private boolean checkOOB() {
 		return (vertical && y + size > BattleshipGame.SIZE + 1) ||
@@ -19,10 +19,14 @@ public class Battleship {
 		this.name = name;
 		this.size = size;
 		this.sunk = new boolean[size];
+		this.x = this.y = 1;
+		vertical = false;
 	}
 
 	public Battleship(String name, int size, int x, int y, boolean vertical) {
-		this(name, size);
+		this.name = name;
+		this.size = size;
+		this.sunk = new boolean[size];
 		this.x = x;
 		this.y = y;
 		this.vertical = vertical;
@@ -30,19 +34,12 @@ public class Battleship {
 			throw new IllegalArgumentException("Battleship out of bounds !");
 	}
 
-	public void setPosition(int x, int y, boolean vertical) {
-		int oldx = this.x,
-				oldy = this.y;
-		boolean oldvert = this.vertical;
-		this.x = x;
-		this.y = y;
-		this.vertical = vertical;
-		if(checkOOB()) {
-			this.x = oldx;
-			this.y = oldy;
-			this.vertical = oldvert;
+	public Battleship setPosition(int x, int y, boolean vertical) {
+		Battleship battleship = new Battleship(name, size, x, y, vertical);
+		if(battleship.checkOOB()) {
 			throw new IllegalArgumentException("Battleship out of bounds !");
 		}
+		return battleship;
 	}
 
 	public int[][] getPositions() {

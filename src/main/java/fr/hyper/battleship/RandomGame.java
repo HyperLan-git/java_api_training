@@ -34,7 +34,7 @@ public class RandomGame implements BattleshipProvider {
 				int x = r.nextInt(BattleshipGame.SIZE) + 1,
 						y = r.nextInt(BattleshipGame.SIZE) + 1;
 				try {
-					fleet[i].setPosition(x, y, r.nextBoolean());
+					fleet[i] = fleet[i].setPosition(x, y, r.nextBoolean());
 				} catch (IllegalArgumentException e) {
 					collides = true;
 					continue;

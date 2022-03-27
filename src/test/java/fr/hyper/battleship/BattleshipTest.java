@@ -9,9 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-
-
-
 public class BattleshipTest {
 	@Test
 	public void whenOOB_thenThrow() {
@@ -78,19 +75,19 @@ public class BattleshipTest {
 				});
 		assertTrue(e.getMessage()
 				.contentEquals("Not a tile occupied by this boat !"));
-		ship.setPosition(1, 2, true);
-		assertArrayEquals(ship.getPositions(), new int[][] {
+		Battleship ship2 = ship.setPosition(1, 2, true);
+		assertArrayEquals(ship2.getPositions(), new int[][] {
 			{1, 2},
 			{1, 3},
 			{1, 4},
 			{1, 5},
 			{1, 6}
 		});
-		assertTrue(ship.attack(1, 2));
-		assertTrue(ship.attack(1, 4));
-		assertTrue(ship.attack(1, 5));
-		assertTrue(ship.attack(1, 6));
-		assertFalse(ship.alive());
+		assertTrue(ship2.attack(1, 2));
+		assertTrue(ship2.attack(1, 4));
+		assertTrue(ship2.attack(1, 5));
+		assertTrue(ship2.attack(1, 6));
+		assertFalse(ship2.alive());
 	}
 
 	@Test
@@ -99,7 +96,7 @@ public class BattleshipTest {
 				b2 = new Battleship("test", 5, 3, 2, true);
 		assertNotEquals(b1, "test");
 		assertNotEquals(b1, b2);
-		b2.setPosition(3, 2, false);
+		b2 = b2.setPosition(3, 2, false);
 		assertEquals(b1, b2);
 	}
 }

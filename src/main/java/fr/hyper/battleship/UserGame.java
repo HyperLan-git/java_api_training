@@ -40,7 +40,7 @@ public class UserGame implements BattleshipProvider {
 					continue;
 				}
 				try {
-					b.setPosition(pos[0], pos[1], v);
+					b = b.setPosition(pos[0], pos[1], v);
 				} catch(IllegalArgumentException e) {
 					p = true;
 					System.out.println("Illegal position !");

@@ -43,7 +43,7 @@ public class GameHandler implements HttpHandler {
 
 	public final Player player;
 
-	private HttpClient client = HttpClient.newHttpClient();
+	private final HttpClient client = HttpClient.newHttpClient();
 	private final AtomicReference<String> url = new AtomicReference<>();
 	private final AtomicReference<Boolean> done = new AtomicReference<>(false);
 
@@ -144,14 +144,12 @@ public class GameHandler implements HttpHandler {
 				.setHeader("Content-Type", "application/json")
 				.POST(BodyPublishers.ofString(answer.toString()))
 				.build();
-		try {
-			HttpResponse<String> response = client.send(request, BodyHandlers.ofString(Charset.forName("UTF-8")));
+		client.sendAsync(request, BodyHandlers.ofString(Charset.forName("UTF-8"))).thenAccept((response) -> {
 			JSONObject obj = new JSONObject(response.body());
 			System.out.println("after start : " + obj);
 			this.url.set(obj.getString("url"));
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-		}
+			//Thread.currentThread().interrupt();
+		});
 	}
 
 	@Override
@@ -191,6 +189,7 @@ public class GameHandler implements HttpHandler {
 			} else {
 				System.out.println("Lost :/");
 				while(!done.get()) done.set(true);
+				System.out.println("ye");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -257,11 +256,14 @@ public class GameHandler implements HttpHandler {
 			if(!obj.getBoolean("shipLeft")) {
 				System.out.println("You won !!!");
 				while(!done.get()) done.set(true);
+				System.out.println("ye");
 			}
 		} catch (IOException | InterruptedException e) {
 			System.out.println("Game end myself (no dont do that)");
 			while(!done.get()) done.set(true);
+			System.out.println("ye");
 		}
+		System.out.println("threads = " + Thread.activeCount());
 	}
 
 }

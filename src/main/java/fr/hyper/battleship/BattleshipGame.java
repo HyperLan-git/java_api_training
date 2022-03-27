@@ -1,7 +1,9 @@
 package fr.hyper.battleship;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BattleshipGame {
@@ -10,7 +12,7 @@ public class BattleshipGame {
 
 	private final Map<Point, Boolean> radar = new HashMap<>();
 
-	private Battleship[] fleet = null;
+	private final List<Battleship> fleet = new ArrayList<>();
 
 	private BattleshipProvider provider = new RandomGame();
 
@@ -23,7 +25,8 @@ public class BattleshipGame {
 	}
 
 	public BattleshipGame(Battleship[] fleet) {
-		this.fleet = fleet;
+		for(Battleship ship : fleet)
+			this.fleet.add(ship);
 	}
 
 	public void attacking(Point p, boolean hit) {
@@ -58,9 +61,9 @@ public class BattleshipGame {
 				i++;
 		return i;
 	}
-	
+
 	public Battleship[] getFleet() {
-		return this.fleet;
+		return (Battleship[]) fleet.toArray(new Battleship[fleet.size()]);
 	}
 
 	public boolean hasLost() {
@@ -71,7 +74,7 @@ public class BattleshipGame {
 	}
 
 	public void init() {
-		if(fleet == null)
-			fleet = provider.provide().toArray(new Battleship[0]);
+		if(fleet.size() == 0)
+			fleet.addAll(provider.provide());
 	}
 }
