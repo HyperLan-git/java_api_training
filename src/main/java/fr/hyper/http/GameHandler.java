@@ -143,7 +143,10 @@ public class GameHandler implements HttpHandler {
 				.POST(BodyPublishers.ofString(answer.toString()))
 				.build();
 		try {
-			client.send(request, BodyHandlers.ofString());
+			HttpResponse<String> response = client.send(request, BodyHandlers.ofString(Charset.forName("UTF-8")));
+			JSONObject obj = new JSONObject(response.body());
+			System.out.println("after start : " + obj);
+			this.url.set(obj.getString("url"));
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -178,6 +181,7 @@ public class GameHandler implements HttpHandler {
 				System.out.println("p = " + p);
 				System.out.println("url = " + url.get());
 				if(url.get() == null) {
+					System.out.println("request = " + request);
 					url.set(request.getString("url"));
 				}
 				sendShootRequest(url.get(), p.x, p.y);

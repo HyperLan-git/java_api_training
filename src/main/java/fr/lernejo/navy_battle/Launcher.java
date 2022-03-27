@@ -1,10 +1,21 @@
 package fr.lernejo.navy_battle;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+
 import fr.hyper.http.NavyClient;
 import fr.hyper.http.NavyServer;
 
 public class Launcher {
 	public static void main(String[] args) {
+		File f = new File("log" + args.length + ".txt");
+		try {
+			f.createNewFile();
+			System.setOut(new PrintStream(f));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		System.out.println(args.length);
 		if(args.length < 1) {
 			System.out.println("Port needed !");
