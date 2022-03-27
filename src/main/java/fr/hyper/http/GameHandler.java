@@ -156,6 +156,7 @@ public class GameHandler implements HttpHandler {
 	public void handle(HttpExchange exchange) throws IOException {
 		try {
 			JSONObject request = null;
+			System.out.println("available = " + exchange.getRequestBody().available());
 			if(exchange.getRequestBody().available() > 0)
 				request = decodeRequest(exchange.getRequestBody());
 			String uri = exchange.getRequestURI().getPath().replace("api/game/", "");
