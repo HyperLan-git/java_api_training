@@ -9,7 +9,7 @@ import fr.hyper.http.NavyServer;
 
 public class Launcher {
 	public static void main(String[] args) {
-		File f = new File("log" + args.length + ".txt");
+		File f = new File("log" + args.length + "_" + System.currentTimeMillis() + ".txt");
 		try {
 			f.createNewFile();
 			System.setOut(new PrintStream(f));
@@ -21,6 +21,8 @@ public class Launcher {
 			System.out.println("Port needed !");
 			return;
 		}
+		for(String arg : args)
+			System.out.println("arg=" + arg);
 		if (args.length > 1) {
 			Thread t2 = new Thread(new NavyClient(Integer.valueOf(args[0]), args[1]));
 			t2.start();
