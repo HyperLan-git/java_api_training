@@ -26,8 +26,11 @@ public class Launcher {
 		if (args.length > 1) {
 			Thread t2 = new Thread(new NavyClient(Integer.valueOf(args[0]), args[1]));
 			t2.start();
-			while(t2.isAlive())
-				;
+			try {
+				t2.join();
+			} catch (InterruptedException e) {
+				System.err.print(e);
+			}
 			return;
 		}
 		Thread t = new Thread(new NavyServer(Integer.valueOf(args[0])));

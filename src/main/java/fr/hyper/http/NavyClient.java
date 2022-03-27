@@ -38,7 +38,9 @@ public class NavyClient implements Runnable {
 		s.start();
 		handler.sendStartRequest(address, "http://[" + s.getAddress().getHostName() + "]:" + s.getAddress().getPort());
 		while(!handler.done());
-		s.stop(0);
+		s.stop(1);
+		System.out.println("done" + Thread.activeCount());
+		System.exit(0);
 		Thread.currentThread().interrupt();
 	}
 
