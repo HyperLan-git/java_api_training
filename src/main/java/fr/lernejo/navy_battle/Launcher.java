@@ -13,6 +13,7 @@ public class Launcher {
 		try {
 			f.createNewFile();
 			System.setOut(new PrintStream(f));
+			System.setErr(System.out);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
