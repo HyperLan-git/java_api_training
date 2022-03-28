@@ -148,7 +148,7 @@ public class GameHandler implements HttpHandler {
 			System.out.println("after start : " + obj);
 			this.url.set(obj.getString("url"));
 			//Thread.currentThread().interrupt();
-		});*/
+		});*/;
 	}
 
 	@Override
