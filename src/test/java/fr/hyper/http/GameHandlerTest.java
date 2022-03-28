@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.awt.Point;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -30,6 +31,7 @@ public class GameHandlerTest {
 		};
 		BattleshipGame game = new BattleshipGame(fleet);
 		player = new PlayerMock();
+		player.playNext(new Point(1, 1));
 		handler = new GameHandler(game, player);
 		assertEquals(handler.game, game);
 		assertFalse(handler.done());
@@ -59,17 +61,18 @@ public class GameHandlerTest {
 	public void test_start_request() {
 		try {
 			HttpExchangeMock mock = new HttpExchangeMock(
-					MockUtils.inputStreamOf("{\"id\":\"testid\",\"message\":\"hello\",\"url\":\"testurl\"}"),
+					MockUtils.inputStreamOf("{\"id\":\"testid\",\"message\":\"hello\",\"url\":\"http://testurl\"}"),
 					"GET", "api/game/start");
-			System.out.println(handler);
+			handler.sendStartRequest("http://testurl", "http://test");
 			handler.handle(mock);
 			mock = new HttpExchangeMock(
-					MockUtils.inputStreamOf("{\"id\":\"testid\",\"message\":\"hello\",\"url\":\"testurl\"}"),
+					MockUtils.inputStreamOf("{\"id\":\"testid\",\"message\":\"hello\",\"url\":\"http://testurl\"}"),
 					"POST", "api/game/start");
 			handler.handle(mock);
 			JSONObject obj = new JSONObject(mock.getResponse());
 			assertTrue(obj.optString("id") != null && obj.optString("message") != null && obj.optString("url") != null);
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new IllegalStateException("Exception !", e);
 		}
 	}

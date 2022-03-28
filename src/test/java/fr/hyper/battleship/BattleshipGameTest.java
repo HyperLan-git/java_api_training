@@ -29,8 +29,6 @@ public class BattleshipGameTest {
 		expected[4] = new Battleship("Destroyer", 2, 9, 10, false);
 		game.init();
 		Battleship[] fleet = game.getFleet();
-		for(int i = 0; i < 5; i++)
-			System.out.println(fleet[i].equals(expected[i]));
 		assertArrayEquals(fleet, expected);
 
 		fleet = new Battleship[] {
@@ -46,9 +44,9 @@ public class BattleshipGameTest {
 	@Test
 	public void getAttackedAndLose() { // Me sad when lose :(
 		assertEquals(testGame.getShipsAlive(), 1);
-		assertFalse(testGame.myTurn);
+		assertFalse(testGame.myTurn.get());
 		assertEquals(testGame.getAttacked(new Point(1, 1)), AttackResult.MISS);
-		assertTrue(testGame.myTurn);
+		assertTrue(testGame.myTurn.get());
 		assertEquals(testGame.getAttacked(new Point(5, 7)), AttackResult.HIT);
 		assertEquals(testGame.getAttacked(new Point(5, 8)), AttackResult.HIT);
 		assertFalse(testGame.hasLost()); // happy (hardcore)

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BattleshipGame {
 	public static final int getDefaultSize() {
@@ -17,7 +18,7 @@ public class BattleshipGame {
 
 	private final BattleshipProvider provider;
 
-	public boolean myTurn = false;
+	public final AtomicBoolean myTurn = new AtomicBoolean();
 
 	public BattleshipGame() {provider = new RandomGame();}
 
@@ -32,7 +33,7 @@ public class BattleshipGame {
 	}
 
 	public void attacking(Point p, boolean hit) {
-		myTurn = false;
+		myTurn.set(false);
 		radar.put(p, hit);
 	}
 
@@ -46,7 +47,7 @@ public class BattleshipGame {
 
 	public AttackResult getAttacked(Point p) {
 		Battleship attacked = attacked(p);
-		myTurn = true;
+		myTurn.set(true);
 		if(attacked == null)
 			return AttackResult.MISS;
 		return attacked.alive() ? AttackResult.HIT : AttackResult.SINK;
