@@ -29,7 +29,7 @@ public class BattleshipTest {
 		e = assertThrows(
 				IllegalArgumentException.class,
 				() -> {
-					new Battleship("test", 2, 1, BattleshipGame.SIZE, true);
+					new Battleship("test", 2, 1, BattleshipGame.getDefaultSize(), true);
 				});
 		assertTrue(e.getMessage()
 				.contentEquals("Battleship out of bounds !"));
@@ -84,6 +84,7 @@ public class BattleshipTest {
 			{1, 6}
 		});
 		assertTrue(ship2.attack(1, 2));
+		assertTrue(ship2.attack(1, 3));
 		assertTrue(ship2.attack(1, 4));
 		assertTrue(ship2.attack(1, 5));
 		assertTrue(ship2.attack(1, 6));

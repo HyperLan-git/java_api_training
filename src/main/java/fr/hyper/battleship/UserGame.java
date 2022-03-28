@@ -30,7 +30,8 @@ public class UserGame implements BattleshipProvider {
 			boolean p;
 			do {
 				System.out.println("Will your " + b.getName() + " be vertical ? (y/n)");
-				boolean v = sc.nextLine().contentEquals("y");
+				String line = sc.nextLine();
+				boolean v = line.contentEquals("y");
 				System.out.println("Enter position for your " + b.getName() + " (the most upper left tile written with a character followed by a number) : ");
 
 				p = false;
@@ -40,7 +41,8 @@ public class UserGame implements BattleshipProvider {
 					continue;
 				}
 				try {
-					b = b.setPosition(pos[0], pos[1], v);
+					fleet[i] = b.setPosition(pos[0], pos[1], v);
+					b = fleet[i];
 				} catch(IllegalArgumentException e) {
 					p = true;
 					System.out.println("Illegal position !");

@@ -9,9 +9,9 @@ public class HumanPlayer implements Player {
 	@Override
 	public Point attack(BattleshipGame game) {
 		System.out.println("Radar:");
-		for (int i = 0; i < BattleshipGame.SIZE; i++) {
+		for (int i = 0; i < BattleshipGame.getDefaultSize(); i++) {
 			System.out.println("---------------------");
-			for (int j = 0; j < BattleshipGame.SIZE; j++) {
+			for (int j = 0; j < BattleshipGame.getDefaultSize(); j++) {
 				boolean attacked = false;
 				boolean hit = false;
 				for(Entry<Point, Boolean> entry : game.getRadar().entrySet()) {

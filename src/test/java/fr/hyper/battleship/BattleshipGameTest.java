@@ -29,6 +29,8 @@ public class BattleshipGameTest {
 		expected[4] = new Battleship("Destroyer", 2, 9, 10, false);
 		game.init();
 		Battleship[] fleet = game.getFleet();
+		for(int i = 0; i < 5; i++)
+			System.out.println(fleet[i].equals(expected[i]));
 		assertArrayEquals(fleet, expected);
 
 		fleet = new Battleship[] {

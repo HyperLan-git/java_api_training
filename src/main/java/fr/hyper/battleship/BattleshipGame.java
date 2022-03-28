@@ -7,24 +7,26 @@ import java.util.List;
 import java.util.Map;
 
 public class BattleshipGame {
-
-	public static final int SIZE = 10;
+	public static final int getDefaultSize() {
+		return 10;
+	}
 
 	private final Map<Point, Boolean> radar = new HashMap<>();
 
 	private final List<Battleship> fleet = new ArrayList<>();
 
-	private BattleshipProvider provider = new RandomGame();
+	private final BattleshipProvider provider;
 
 	public boolean myTurn = false;
 
-	public BattleshipGame() {}
+	public BattleshipGame() {provider = new RandomGame();}
 
 	public BattleshipGame(BattleshipProvider provider) {
 		this.provider = provider;
 	}
 
 	public BattleshipGame(Battleship[] fleet) {
+		provider = new RandomGame();
 		for(Battleship ship : fleet)
 			this.fleet.add(ship);
 	}
