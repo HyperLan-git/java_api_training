@@ -143,12 +143,12 @@ public class GameHandler implements HttpHandler {
 				.setHeader("Content-Type", "application/json")
 				.POST(BodyPublishers.ofString(answer.toString()))
 				.build();
-		client.sendAsync(request, BodyHandlers.ofString(Charset.forName("UTF-8"))).thenAccept((response) -> {
+		client.sendAsync(request, BodyHandlers.ofString(Charset.forName("UTF-8")))/*.thenAccept((response) -> {
 			JSONObject obj = new JSONObject(response.body());
 			System.out.println("after start : " + obj);
 			this.url.set(obj.getString("url"));
 			//Thread.currentThread().interrupt();
-		});
+		});*/
 	}
 
 	@Override
