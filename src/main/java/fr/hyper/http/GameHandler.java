@@ -153,42 +153,46 @@ public class GameHandler implements HttpHandler {
 
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
-		JSONObject request = null;
-		System.out.println("available = " + exchange.getRequestBody().available());
-		if(exchange.getRequestBody().available() > 0)
-			request = decodeRequest(exchange.getRequestBody());
-		String uri = exchange.getRequestURI().getPath().replace("api/game/", "");
-		if(uri.contains("?"))
-			uri = uri.split("?")[0];
-		JSONObject answer = answer(exchange, request, uri);
-		System.out.println("Answering with : " + answer);
-		if(answer != null) {
-			System.out.println("respcode = " + exchange.getResponseCode());
-			if(exchange.getResponseCode() == -1)
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_ACCEPTED,
-						answer.toString().length());
-			exchange.getResponseBody().write(answer.toString().getBytes());
-			exchange.close();
-		} else {
-			exchange.sendResponseHeaders(exchange.getResponseCode() == -1 ? HttpURLConnection.HTTP_OK : exchange.getResponseCode(),
-					0);
-			exchange.close();
-		}
-		System.out.println("before");
-		if(!game.hasLost()) {
-			Point p = this.player.attack(game);
-			System.out.println("p = " + p);
-			System.out.println("url = " + url.get());
-			if(url.get() == null) {
-				System.out.println("request = " + request);
-				url.set(request.getString("url"));
+		try {
+			JSONObject request = null;
+			System.out.println("available = " + exchange.getRequestBody().available());
+			if(exchange.getRequestBody().available() > 0)
+				request = decodeRequest(exchange.getRequestBody());
+			String uri = exchange.getRequestURI().getPath().replace("api/game/", "");
+			if(uri.contains("?"))
+				uri = uri.split("?")[0];
+			JSONObject answer = answer(exchange, request, uri);
+			System.out.println("Answering with : " + answer);
+			if(answer != null) {
+				System.out.println("respcode = " + exchange.getResponseCode());
+				if(exchange.getResponseCode() == -1)
+					exchange.sendResponseHeaders(HttpURLConnection.HTTP_ACCEPTED,
+							answer.toString().length());
+				exchange.getResponseBody().write(answer.toString().getBytes());
+				exchange.close();
+			} else {
+				exchange.sendResponseHeaders(exchange.getResponseCode() == -1 ? HttpURLConnection.HTTP_OK : exchange.getResponseCode(),
+						0);
+				exchange.close();
 			}
-			sendShootRequest(url.get(), p.x, p.y);
-		} else {
-			System.out.println("Lost :/");
-			while(!done.get()) done.set(true);
-			System.out.println("ye");
-			System.in.close();
+			System.out.println("before");
+			if(!game.hasLost()) {
+				Point p = this.player.attack(game);
+				System.out.println("p = " + p);
+				System.out.println("url = " + url.get());
+				if(url.get() == null) {
+					System.out.println("request = " + request);
+					url.set(request.getString("url"));
+				}
+				sendShootRequest(url.get(), p.x, p.y);
+			} else {
+				System.out.println("Lost :/");
+				while(!done.get()) done.set(true);
+				System.out.println("ye");
+				System.in.close();
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 
