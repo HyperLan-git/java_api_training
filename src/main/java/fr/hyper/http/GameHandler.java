@@ -188,6 +188,7 @@ public class GameHandler implements HttpHandler {
 			System.out.println("Lost :/");
 			while(!done.get()) done.set(true);
 			System.out.println("ye");
+			System.in.close();
 		}
 	}
 
@@ -252,11 +253,14 @@ public class GameHandler implements HttpHandler {
 				System.out.println("You won !!!");
 				while(!done.get()) done.set(true);
 				System.out.println("ye");
+				System.in.close();
+				Thread.currentThread().interrupt();
 			}
 		} catch (IOException | InterruptedException e) {
 			System.out.println("Game end myself (no dont do that)");
 			while(!done.get()) done.set(true);
 			System.out.println("ye");
+			Thread.currentThread().interrupt();
 		}
 		System.out.println("threads = " + Thread.activeCount());
 	}

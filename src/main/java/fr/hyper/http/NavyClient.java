@@ -24,7 +24,6 @@ public class NavyClient implements Runnable {
 	public void run() {
 		HttpServer s = null;
 		GameHandler handler = new GameHandler(new BattleshipGame(new RandomGame()), new ComputerPlayer());
-		System.out.println("threads3 = " + Thread.activeCount());
 		try {
 			s = HttpServer.create(new InetSocketAddress(port), 0);
 		} catch (IOException e) {
@@ -32,7 +31,6 @@ public class NavyClient implements Runnable {
 			e.printStackTrace();
 			return;
 		}
-		System.out.println("threads = " + Thread.activeCount());
 		ExecutorService service = Executors.newFixedThreadPool(1);
 		s.setExecutor(service);
 		s.createContext("/ping", new PingHandler());
@@ -46,6 +44,8 @@ public class NavyClient implements Runnable {
 		while(!handler.done());
 		s.stop(1);
 		System.out.println("done");
+		//Why do I need to do this...
+		System.exit(0);
 		Thread.currentThread().interrupt();
 	}
 
