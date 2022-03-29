@@ -1,15 +1,13 @@
 package fr.hyper.http;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import com.sun.net.httpserver.HttpServer;
 
 import fr.hyper.battleship.BattleshipGame;
 import fr.hyper.battleship.ComputerPlayer;
 import fr.hyper.battleship.RandomGame;
+import fr.lernejo.navy_battle.Launcher;
 
 public class NavyClient implements Runnable {
 	private final String address;
@@ -22,23 +20,11 @@ public class NavyClient implements Runnable {
 
 	@Override
 	public void run() {
-		HttpServer s = null;
 		GameHandler handler = new GameHandler(new BattleshipGame(new RandomGame()), new ComputerPlayer());
-		try {
-			s = HttpServer.create(new InetSocketAddress(port), 0);
-		} catch (IOException e) {
-			System.err.println("Could not create server ! Cause : " + e.getLocalizedMessage());
-			e.printStackTrace();
-			return;
-		}
-		ExecutorService service = Executors.newFixedThreadPool(1);
-		s.setExecutor(service);
-		s.createContext("/ping", new PingHandler());
-		s.createContext("/api/game/", handler);
-		s.start();
-		handler.sendStartRequest(address, "http://[" + s.getAddress().getHostName() + "]:" + s.getAddress().getPort());
+		HttpServer server = Launcher.createServer(new InetSocketAddress(port), handler, 0);
+		handler.sendStartRequest(address, "http://[" + server.getAddress().getHostName() + "]:" + server.getAddress().getPort());
 		while(!handler.done());
-		s.stop(1);
+		server.stop(0);
 		Thread.currentThread().interrupt();
 	}
 

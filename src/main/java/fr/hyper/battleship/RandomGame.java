@@ -23,25 +23,28 @@ public class RandomGame implements BattleshipProvider {
 						return true;
 		return false;
 	}
+	
+	protected final Battleship randomBoat(Random r, Battleship[] fleet, int i) {
+		Battleship result = null;
+		int x = r.nextInt(BattleshipGame.getDefaultSize()) + 1,
+				y = r.nextInt(BattleshipGame.getDefaultSize()) + 1;
+		try {
+			result = fleet[i].setPosition(x, y, r.nextBoolean());
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
+		if(collidesWithPrevious(fleet[i], fleet, i))
+			return null;
+		return result;
+	}
 
 	private Battleship[] randomFleet() {
 		Random r = new Random();
 		Battleship[] fleet = defaultFleet();
-		boolean collides;
 		for(int i = 0; i < 5; i++) {
-			do {
-				collides = false;
-				int x = r.nextInt(BattleshipGame.getDefaultSize()) + 1,
-						y = r.nextInt(BattleshipGame.getDefaultSize()) + 1;
-				try {
-					fleet[i] = fleet[i].setPosition(x, y, r.nextBoolean());
-				} catch (IllegalArgumentException e) {
-					collides = true;
-					continue;
-				}
-				if(collidesWithPrevious(fleet[i], fleet, i))
-					collides = true;
-			} while(collides);
+			Battleship boat = null;
+			while(boat == null) boat = randomBoat(r, fleet, i);
+			fleet[i] = boat;
 		}
 		return fleet;
 	}
