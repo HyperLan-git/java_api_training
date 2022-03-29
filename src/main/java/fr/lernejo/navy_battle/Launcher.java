@@ -31,7 +31,7 @@ public class Launcher {
 		s.start();
 		return s;
 	}
-	
+
 	private static void logToFile(String file) {
 		File f = new File(file);
 		try {
@@ -50,11 +50,8 @@ public class Launcher {
 			System.out.println("Port needed !");
 			return;
 		}
-		Thread t = null;
-		if (args.length > 1) 
-			t = new Thread(new NavyClient(Integer.valueOf(args[0]), args[1]));
-		else
-			t = new Thread(new NavyServer(Integer.valueOf(args[0])));
+		Thread t = (args.length > 1) ? new Thread(new NavyClient(Integer.valueOf(args[0]), args[1])) :
+			new Thread(new NavyServer(Integer.valueOf(args[0])));
 		t.start();
 		try {
 			t.join();

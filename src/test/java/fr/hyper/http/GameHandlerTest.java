@@ -40,18 +40,18 @@ public class GameHandlerTest {
 	@Test
 	public void test_json_handling() {
 		JSONArray array = new JSONArray("[\"test\", 1, 50, {\"lul\":-42}]");
-		assertTrue(GameHandler.contains(array, "test"));
-		assertFalse(GameHandler.contains(array, "yuiop"));
+		assertTrue(APIUtils.contains(array, "test"));
+		assertFalse(APIUtils.contains(array, "yuiop"));
 
-		JSONObject obj = GameHandler.decodeRequest(MockUtils.inputStreamOf("{\"test\":\"lol\", \"aze\":1}"));
+		JSONObject obj = APIUtils.decodeRequest(MockUtils.inputStreamOf("{\"test\":\"lol\", \"aze\":1}"));
 		assertEquals(obj.optString("test"), "lol");
 		assertEquals(obj.optString("aze"), "1");
-		assertNull(GameHandler.decodeRequest(MockUtils.inputStreamOf("\"{}{}didi\"eeeeeeeeeeeee")));
+		assertNull(APIUtils.decodeRequest(MockUtils.inputStreamOf("\"{}{}didi\"eeeeeeeeeeeee")));
 	}
 	
 	@Test
 	public void test_url_decoding() {
-		Map<String, String> pairs = GameHandler.getQueryMap("a=aBc123&watch=dQw4w9WgXcQ");
+		Map<String, String> pairs = APIUtils.getQueryMap("a=aBc123&watch=dQw4w9WgXcQ");
 		assertTrue(pairs.containsKey("a") && pairs.containsKey("watch"));
 		assertEquals(pairs.get("a"), "aBc123");
 		assertEquals(pairs.get("watch"), "dQw4w9WgXcQ");
