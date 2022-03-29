@@ -1,15 +1,26 @@
 package fr.hyper.http;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sun.net.httpserver.HttpExchange;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public abstract class APIUtils {
+	public static final void send404(HttpExchange exchange) throws IOException {
+		OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
+		writer.append("Resource not found :(");
+		exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 21);
+		writer.close();
+		exchange.close();
+	}
 	public static final boolean contains(JSONArray arr, CharSequence str) {
 		for(Object obj : arr) {
 			if(obj instanceof String)
