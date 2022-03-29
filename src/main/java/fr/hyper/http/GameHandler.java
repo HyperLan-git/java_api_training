@@ -111,6 +111,7 @@ public class GameHandler implements HttpHandler {
 	}
 
 	private JSONObject startRequest(HttpExchange exchange, JSONObject request) {
+		System.out.println("start method = " + exchange.getRequestMethod());
 		if (!exchange.getRequestMethod().contentEquals("POST"))
 			return null;
 		if (request == null)
