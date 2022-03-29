@@ -154,6 +154,7 @@ public class GameHandler implements HttpHandler {
 
 	@Override
 	public void handle(HttpExchange exchange) {
+		return;
 		try {
 			System.out.println("hi");
 			JSONObject request = null;
