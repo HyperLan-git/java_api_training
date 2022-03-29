@@ -155,6 +155,7 @@ public class GameHandler implements HttpHandler {
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
 		try {
+			System.out.println("hi");
 			JSONObject request = null;
 			System.out.println("available = " + exchange.getRequestBody().available());
 			if(exchange.getRequestBody().available() > 0)
@@ -172,6 +173,7 @@ public class GameHandler implements HttpHandler {
 				exchange.getResponseBody().write(answer.toString().getBytes());
 				exchange.close();
 			} else {
+				System.out.println("invalid shit");
 				exchange.sendResponseHeaders(exchange.getResponseCode() == -1 ? HttpURLConnection.HTTP_OK : exchange.getResponseCode(),
 						0);
 				exchange.close();
@@ -198,12 +200,14 @@ public class GameHandler implements HttpHandler {
 
 	private JSONObject answer(HttpExchange exchange, JSONObject request, String uri) throws IOException {
 		JSONObject response = null;
+		System.out.println("andwer start");
 		switch(uri) {
 			case "start":
 			case "/start":
 				System.out.println("Recieved a start request");
 				System.out.println(request);
 				response = startRequest(exchange, request);
+				System.out.println("response is " + response);
 				//				if(request == null || request.optString("url") == null) {
 				//					System.out.println("But was invalid");
 				//					OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
