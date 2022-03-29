@@ -170,7 +170,6 @@ public class GameHandler implements HttpHandler {
 					exchange.sendResponseHeaders(HttpURLConnection.HTTP_ACCEPTED,
 							answer.toString().length());
 				exchange.getResponseBody().write(answer.toString().getBytes());
-				exchange.close();
 			} else {
 				exchange.sendResponseHeaders(exchange.getResponseCode() == -1 ? HttpURLConnection.HTTP_OK : exchange.getResponseCode(),
 						0);
