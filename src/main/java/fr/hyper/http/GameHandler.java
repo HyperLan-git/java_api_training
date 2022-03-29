@@ -149,7 +149,6 @@ public class GameHandler implements HttpHandler {
 			JSONObject obj = new JSONObject(response.body());
 			System.out.println("after start : " + obj);
 			this.url.set(obj.getString("url"));
-			Thread.currentThread().interrupt();
 		});
 	}
 
@@ -256,7 +255,6 @@ public class GameHandler implements HttpHandler {
 				System.out.println("You won !!!");
 				while(!done.get()) done.set(true);
 				System.out.println("ye");
-				Thread.currentThread().interrupt();
 			}
 		});
 		System.out.println("threads = " + Thread.activeCount());

@@ -45,7 +45,7 @@ public class NavyClient implements Runnable {
 		s.stop(1);
 		System.out.println("done");
 		//Why do I need to do this...
-//		System.exit(0);
+		System.exit(0);
 		Thread.currentThread().interrupt();
 	}
 
