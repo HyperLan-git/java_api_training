@@ -262,6 +262,7 @@ public class GameHandler implements HttpHandler {
 				Thread.currentThread().interrupt();
 			}
 		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
 			System.out.println("Game end myself (no dont do that)");
 			while(!done.get()) done.set(true);
 			System.out.println("ye");
