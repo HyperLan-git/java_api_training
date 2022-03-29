@@ -170,11 +170,9 @@ public class GameHandler implements HttpHandler {
 					exchange.sendResponseHeaders(HttpURLConnection.HTTP_ACCEPTED,
 							answer.toString().length());
 				exchange.getResponseBody().write(answer.toString().getBytes());
-				exchange.close();
 			} else {
 				exchange.sendResponseHeaders(exchange.getResponseCode() == -1 ? HttpURLConnection.HTTP_OK : exchange.getResponseCode(),
 						0);
-				exchange.close();
 			}
 			System.out.println("before");
 			if(!game.hasLost()) {
@@ -190,7 +188,6 @@ public class GameHandler implements HttpHandler {
 				System.out.println("Lost :/");
 				while(!done.get()) done.set(true);
 				System.out.println("ye");
-				System.in.close();
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -258,7 +255,6 @@ public class GameHandler implements HttpHandler {
 				System.out.println("You won !!!");
 				while(!done.get()) done.set(true);
 				System.out.println("ye");
-				System.in.close();
 				Thread.currentThread().interrupt();
 			}
 		} catch (IOException | InterruptedException e) {
