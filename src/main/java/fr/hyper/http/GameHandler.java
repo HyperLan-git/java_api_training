@@ -205,15 +205,15 @@ public class GameHandler implements HttpHandler {
 				System.out.println("Recieved a start request");
 				System.out.println(request);
 				response = startRequest(exchange, request);
-				if(request == null || request.optString("url") == null) {
-					System.out.println("But was invalid");
-					OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
-					exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 17);
-					writer.append("Invalid request !");
-					writer.close();
-					exchange.close();
-					return null;
-				}
+//				if(request == null || request.optString("url") == null) {
+//					System.out.println("But was invalid");
+//					OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
+//					exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 17);
+//					writer.append("Invalid request !");
+//					writer.close();
+//					exchange.close();
+//					return null;
+//				}
 				return response;
 			case "fire":
 			case "/fire":
