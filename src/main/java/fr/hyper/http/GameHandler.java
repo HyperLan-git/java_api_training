@@ -12,8 +12,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.Charset;
-import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.json.JSONObject;
@@ -32,14 +32,11 @@ public class GameHandler implements HttpHandler {
 	public final String[] START_MESSAGE = {"Get owned n00b", "Your fleet will exit this earth's atomosphere",
 			"ff?", "Why sink your boats when you've already hit rock bottom?", "ESM pow !"};
 	private final UUID id = UUID.randomUUID();
-
 	public final BattleshipGame game;
-
 	public final Player player;
-
 	private final HttpClient client = HttpClient.newHttpClient();
 	private final AtomicReference<String> url = new AtomicReference<>();
-	private final AtomicReference<Boolean> done = new AtomicReference<>(false);
+	private final AtomicBoolean done = new AtomicBoolean();
 
 	public GameHandler(BattleshipGame game, Player p) {
 		this.game = game;
@@ -54,23 +51,14 @@ public class GameHandler implements HttpHandler {
 		if (!exchange.getRequestMethod().contentEquals("GET") ||
 				exchange.getRequestURI().toString().lastIndexOf('?') == -1)
 			return null;
-		Map<String, String> queryMap = APIUtils.getQueryMap(exchange.getRequestURI().toString().split("[?]")[1]);
-		if(!queryMap.containsKey("cell"))
-			return null;
+		String cell = APIUtils.getQueryMap(exchange.getRequestURI().toString().split("[?]")[1]).get("cell");
+		if(cell == null)return null;
 		exchange.getResponseHeaders().add("Content-type", "application/json");
-		String cell = queryMap.get("cell");
-		System.out.println("Cell = " + cell);
 		AttackResult result = game.getAttacked(new Point(cell.toUpperCase().charAt(0) - 'A' + 1, Integer.valueOf(cell.substring(1))));
-		System.out.println("result = " + result);
-		JSONObject answer = new JSONObject();
-		answer.put("consequence", result.toString());
-		answer.put("shipLeft", !game.hasLost());
-		System.out.println("shoot consequence = " + answer);
-		return answer;
+		return new JSONObject().put("consequence", result.toString()).put("shipLeft", !game.hasLost());
 	}
 
 	private JSONObject startRequest(HttpExchange exchange, JSONObject request) {
-		System.out.println("start method = " + exchange.getRequestMethod());
 		if (!exchange.getRequestMethod().contentEquals("POST")) return null;
 		exchange.getResponseHeaders().add("Content-type", "application/json");
 		if (request == null) this.url.set("http://" + exchange.getRemoteAddress().toString().split("/")[1]);
@@ -82,70 +70,40 @@ public class GameHandler implements HttpHandler {
 		return answer;
 	}
 
-	public void sendStartRequest(String adversaryURL, String myURL) {
-		this.done.set(false);
-		this.game.init();
-		JSONObject answer = new JSONObject().put("id", id.toString()).put("message", START_MESSAGE[(int) (Math.random() * START_MESSAGE.length)])
-				.put("url", myURL);
-		HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create(adversaryURL + "/api/game/start"))
-				.setHeader("Accept", "application/json")
-				.setHeader("Content-Type", "application/json")
-				.POST(BodyPublishers.ofString(answer.toString()))
-				.build();
-		client.sendAsync(request, BodyHandlers.ofString(Charset.forName("UTF-8"))).thenAccept(
-				(response) -> {if(this.url.get() == null)this.url.set(new JSONObject(response.body()).getString("url"));}
-				);
-	}
-
 	@Override
-	public void handle(HttpExchange exchange) {
-		try {
-			JSONObject request = null;
-			if(exchange.getRequestBody().available() > 0)
-				request = APIUtils.decodeRequest(exchange.getRequestBody());
-			String uri = exchange.getRequestURI().getPath().replace("api/game/", "");
-			if(uri.contains("?"))
-				uri = uri.split("?")[0];
-			JSONObject answer = answer(exchange, request, uri);
-			if(answer != null) {
-				if(exchange.getResponseCode() == -1)
-					exchange.sendResponseHeaders(HttpURLConnection.HTTP_ACCEPTED,
-							answer.toString().length());
-				exchange.getResponseBody().write(answer.toString().getBytes());
-				exchange.close();
-			} else {
-				exchange.sendResponseHeaders(exchange.getResponseCode() == -1 ? HttpURLConnection.HTTP_OK : exchange.getResponseCode(),
-						0);
-				exchange.close();
-			}
-			if(!game.hasLost()) {
-				Point p = this.player.attack(game);
-				while (url.get() == null) url.set(request.getString("url"));
-				sendShootRequest(url.get(), p.x, p.y);
-			} else {
-				System.out.println("Lost :/");
-				while(!done.get()) done.set(true);
-				System.out.println("ye");
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
+	public void handle(HttpExchange exchange) throws IOException {
+		JSONObject request = null;
+		if(exchange.getRequestBody().available() > 0) request = APIUtils.decodeRequest(exchange.getRequestBody());
+		String uri = exchange.getRequestURI().getPath().replace("api/game/", "");
+		if(uri.contains("?")) uri = uri.split("?")[0];
+		JSONObject answer = answer(exchange, request, uri);
+		if(answer != null) {
+			if(exchange.getResponseCode() == -1) exchange.sendResponseHeaders(HttpURLConnection.HTTP_ACCEPTED, answer.toString().length());
+			exchange.getResponseBody().write(answer.toString().getBytes());
+		} else exchange.sendResponseHeaders(exchange.getResponseCode() == -1 ? HttpURLConnection.HTTP_OK : exchange.getResponseCode(), 0);
+		exchange.close();
+		answer(request);
+	}
+	
+	private void answer(JSONObject request) {
+		if(!game.hasLost()) {
+			Point p = this.player.attack(game);
+			while (url.get() == null) url.set(request.getString("url"));
+			sendShootRequest(url.get(), p.x, p.y);
+		} else {
+			System.out.println("Lost :/");
+			while(!done.get()) done.set(true);
 		}
 	}
 
 	private JSONObject answer(HttpExchange exchange, JSONObject request, String uri) throws IOException {
-		JSONObject response = null;
 		switch(uri) {
 			case "start":
 			case "/start":
 				return startRequest(exchange, request);
 			case "fire":
 			case "/fire":
-				response = shootRequest(exchange, request);
-				if(this.game.hasLost() || response == null) {
-					return response;
-				}
-				return response;
+				return shootRequest(exchange, request);
 			default:
 				OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
 				writer.append("Resource not found :(");
@@ -160,13 +118,8 @@ public class GameHandler implements HttpHandler {
 		char c = 'A' - 1;
 		c += x;
 		System.out.println("uri = " + URI.create(adversaryURL + "/api/game/fire?cell=" + c + y));
-		HttpRequest request = HttpRequest.newBuilder()
-				.setHeader("Accept", "application/json")
-				.setHeader("Content-Type", "application/json")
-				.uri(URI.create(adversaryURL + "/api/game/fire?cell=" + c + y))
-				.version(Version.HTTP_1_1)
-				.GET()
-				.build();
+		HttpRequest request = HttpRequest.newBuilder().setHeader("Accept", "application/json").setHeader("Content-Type", "application/json")
+				.uri(URI.create(adversaryURL + "/api/game/fire?cell=" + c + y)).version(Version.HTTP_1_1).GET().build();
 		client.sendAsync(request, BodyHandlers.ofString()).thenAccept((response) -> {
 			JSONObject obj = new JSONObject(response.body());
 			this.game.attacking(new Point(x, y), !"MISS".equals(obj.getString("consequence")));
@@ -177,4 +130,15 @@ public class GameHandler implements HttpHandler {
 		});
 	}
 
+	public void sendStartRequest(String adversaryURL, String myURL) {
+		this.done.set(false);
+		this.game.init();
+		JSONObject answer = new JSONObject().put("id", id.toString()).put("message", START_MESSAGE[(int) (Math.random() * START_MESSAGE.length)])
+				.put("url", myURL);
+		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(adversaryURL + "/api/game/start")).setHeader("Accept", "application/json")
+				.setHeader("Content-Type", "application/json").POST(BodyPublishers.ofString(answer.toString())).build();
+		client.sendAsync(request, BodyHandlers.ofString(Charset.forName("UTF-8"))).thenAccept(
+				(response) -> {if(this.url.get() == null)this.url.set(new JSONObject(response.body()).getString("url"));}
+				);
+	}
 }
