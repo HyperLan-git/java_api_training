@@ -125,6 +125,7 @@ public class GameHandler implements HttpHandler {
 		int rand = (int) (Math.random() * START_MESSAGE.length);
 		answer.put("message", START_MESSAGE[rand]);
 		answer.put("url", "http://[" + addr.getHostString() + "]:" + addr.getPort());
+		sendStartRequest(url.get(), "http://[" + addr.getHostString() + "]:" + addr.getPort());
 		return answer;
 	}
 
@@ -262,7 +263,7 @@ public class GameHandler implements HttpHandler {
 			System.out.println("Game end myself (no dont do that)");
 			while(!done.get()) done.set(true);
 			System.out.println("ye");
-			Thread.currentThread().interrupt();
+//			Thread.currentThread().interrupt();
 		}
 		System.out.println("threads = " + Thread.activeCount());
 	}
