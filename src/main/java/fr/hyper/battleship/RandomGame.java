@@ -27,8 +27,8 @@ public class RandomGame implements BattleshipProvider {
 	private Battleship[] randomFleet() {
 		Random r = new Random();
 		Battleship[] fleet = defaultFleet();
+		boolean collides;
 		for(int i = 0; i < 5; i++) {
-			boolean collides;
 			do {
 				collides = false;
 				int x = r.nextInt(BattleshipGame.getDefaultSize()) + 1,
@@ -41,7 +41,6 @@ public class RandomGame implements BattleshipProvider {
 				}
 				if(collidesWithPrevious(fleet[i], fleet, i))
 					collides = true;
-
 			} while(collides);
 		}
 		return fleet;

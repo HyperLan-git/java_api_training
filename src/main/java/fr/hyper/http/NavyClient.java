@@ -36,16 +36,9 @@ public class NavyClient implements Runnable {
 		s.createContext("/ping", new PingHandler());
 		s.createContext("/api/game/", handler);
 		s.start();
-		System.out.println("before start request");
-		System.out.println("threads = " + Thread.activeCount());
 		handler.sendStartRequest(address, "http://[" + s.getAddress().getHostName() + "]:" + s.getAddress().getPort());
-		System.out.println("after start request");
-		System.out.println("threads = " + Thread.activeCount());
 		while(!handler.done());
 		s.stop(1);
-		System.out.println("done");
-		//Why do I need to do this...
-//		System.exit(0);
 		Thread.currentThread().interrupt();
 	}
 
