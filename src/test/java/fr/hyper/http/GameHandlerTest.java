@@ -34,7 +34,7 @@ public class GameHandlerTest {
 		player.playNext(new Point(1, 1));
 		handler = new GameHandler(game, player);
 		assertEquals(handler.game, game);
-		assertFalse(handler.done());
+		assertFalse(handler.done.get());
 	}
 
 	@Test

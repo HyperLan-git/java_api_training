@@ -21,7 +21,7 @@ public class NavyServer implements Runnable {
 	public void run() {
 		GameHandler handler = new GameHandler(new BattleshipGame(new RandomGame()), new ComputerPlayer());
 		HttpServer server = Launcher.createServer(new InetSocketAddress(port), handler, 0);
-		while(!handler.done());
+		while(!handler.done.get());
 		server.stop(0);
 		Thread.currentThread().interrupt();
 	}

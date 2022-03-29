@@ -26,33 +26,24 @@ import fr.hyper.battleship.BattleshipGame;
 import fr.hyper.battleship.Player;
 
 public class GameHandler implements HttpHandler {
-	/**
-	 * These messages are maximum cringe
-	 */
-	public final String[] START_MESSAGE = {"Get owned n00b", "Your fleet will exit this earth's atomosphere",
-			"ff?", "Why sink your boats when you've already hit rock bottom?", "ESM pow !"};
+	public final String[] START_MESSAGE = {"Get owned n00b", "Your fleet will exit this earth's atomosphere", "ff?", "Why sink your boats when you've already hit rock bottom?", "ESM pow !"};
 	private final UUID id = UUID.randomUUID();
 	public final BattleshipGame game;
 	public final Player player;
+	public final AtomicBoolean done = new AtomicBoolean();
 	private final HttpClient client = HttpClient.newHttpClient();
 	private final AtomicReference<String> url = new AtomicReference<>();
-	private final AtomicBoolean done = new AtomicBoolean();
 
 	public GameHandler(BattleshipGame game, Player p) {
 		this.game = game;
 		this.player = p;
 	}
 
-	public boolean done() {
-		return done.get();
-	}
-
 	private JSONObject shootRequest(HttpExchange exchange, JSONObject request) {
 		if (!exchange.getRequestMethod().contentEquals("GET") ||
-				exchange.getRequestURI().toString().lastIndexOf('?') == -1)
-			return null;
+				exchange.getRequestURI().toString().lastIndexOf('?') == -1) return null;
 		String cell = APIUtils.getQueryMap(exchange.getRequestURI().toString().split("[?]")[1]).get("cell");
-		if(cell == null)return null;
+		if (cell == null) return null;
 		exchange.getResponseHeaders().add("Content-type", "application/json");
 		AttackResult result = game.getAttacked(new Point(cell.toUpperCase().charAt(0) - 'A' + 1, Integer.valueOf(cell.substring(1))));
 		return new JSONObject().put("consequence", result.toString()).put("shipLeft", !game.hasLost());
@@ -115,11 +106,10 @@ public class GameHandler implements HttpHandler {
 	}
 
 	public void sendShootRequest(String adversaryURL, int x, int y) {
-		char c = 'A' - 1;
-		c += x;
-		System.out.println("uri = " + URI.create(adversaryURL + "/api/game/fire?cell=" + c + y));
+		char c = (char) (('A' - 1) + x);
+		System.out.println("uri = " + URI.create(adversaryURL + "/api/game/fire?cell=" + c + "" + y));
 		HttpRequest request = HttpRequest.newBuilder().setHeader("Accept", "application/json").setHeader("Content-Type", "application/json")
-				.uri(URI.create(adversaryURL + "/api/game/fire?cell=" + c + y)).version(Version.HTTP_1_1).GET().build();
+				.uri(URI.create(adversaryURL + "/api/game/fire?cell=" + c + "" + y)).version(Version.HTTP_1_1).GET().build();
 		client.sendAsync(request, BodyHandlers.ofString()).thenAccept((response) -> {
 			JSONObject obj = new JSONObject(response.body());
 			this.game.attacking(new Point(x, y), !"MISS".equals(obj.getString("consequence")));
