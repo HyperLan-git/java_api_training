@@ -148,7 +148,7 @@ public class GameHandler implements HttpHandler {
 		client.sendAsync(request, BodyHandlers.ofString(Charset.forName("UTF-8"))).thenAccept((response) -> {
 			JSONObject obj = new JSONObject(response.body());
 			System.out.println("after start : " + obj);
-			while(this.url.get() == null) this.url.set(obj.getString("url"));
+			while(this.url.get() == null)this.url.set(obj.getString("url"));
 		});
 	}
 
@@ -170,6 +170,7 @@ public class GameHandler implements HttpHandler {
 					exchange.sendResponseHeaders(HttpURLConnection.HTTP_ACCEPTED,
 							answer.toString().length());
 				exchange.getResponseBody().write(answer.toString().getBytes());
+				exchange.close();
 			} else {
 				exchange.sendResponseHeaders(exchange.getResponseCode() == -1 ? HttpURLConnection.HTTP_OK : exchange.getResponseCode(),
 						0);
@@ -256,7 +257,6 @@ public class GameHandler implements HttpHandler {
 				System.out.println("ye");
 			}
 		});
-		System.out.println("hello");
 	}
 
 }
