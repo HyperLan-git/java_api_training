@@ -153,7 +153,7 @@ public class GameHandler implements HttpHandler {
 	}
 
 	@Override
-	public void handle(HttpExchange exchange) throws IOException {
+	public void handle(HttpExchange exchange) {
 		try {
 			System.out.println("hi");
 			JSONObject request = null;
@@ -207,7 +207,7 @@ public class GameHandler implements HttpHandler {
 				System.out.println("Recieved a start request");
 				System.out.println(request);
 				response = startRequest(exchange, request);
-				System.out.println("response is " + response);
+				System.out.println("response" + response);
 				//				if(request == null || request.optString("url") == null) {
 				//					System.out.println("But was invalid");
 				//					OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
@@ -251,7 +251,7 @@ public class GameHandler implements HttpHandler {
 				.build();
 		System.out.println("shoot ready");
 		System.out.println("now waiting for answer");
-		/*client.sendAsync(request, BodyHandlers.ofString()).thenAccept((response) -> {
+		client.sendAsync(request, BodyHandlers.ofString()).thenAccept((response) -> {
 			System.out.println("Shoot response : " + response.body());
 			JSONObject obj = new JSONObject(response.body());
 			this.game.attacking(new Point(x, y), !"MISS".equals(obj.getString("consequence")));
@@ -260,7 +260,7 @@ public class GameHandler implements HttpHandler {
 				while(!done.get()) done.set(true);
 				System.out.println("ye");
 			}
-		});*/
+		});
 	}
 
 }
