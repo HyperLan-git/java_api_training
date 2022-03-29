@@ -98,6 +98,7 @@ public class GameHandler implements HttpHandler {
 		Map<String, String> queryMap = getQueryMap(exchange.getRequestURI().toString().split("[?]")[1]);
 		if(!queryMap.containsKey("cell"))
 			return null;
+		exchange.getResponseHeaders().add("Content-type", "application/json");
 		String cell = queryMap.get("cell");
 		System.out.println("Cell = " + cell);
 		AttackResult result = game.getAttacked(new Point(cell.toUpperCase().charAt(0) - 'A' + 1, Integer.valueOf(cell.substring(1))));
@@ -113,6 +114,7 @@ public class GameHandler implements HttpHandler {
 		System.out.println("start method = " + exchange.getRequestMethod());
 		if (!exchange.getRequestMethod().contentEquals("POST"))
 			return null;
+		exchange.getResponseHeaders().add("Content-type", "application/json");
 		if (request == null)
 			this.url.set("http://" + exchange.getRemoteAddress().toString().split("/")[1]);
 		this.done.set(false);
