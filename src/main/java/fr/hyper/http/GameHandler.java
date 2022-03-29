@@ -202,15 +202,15 @@ public class GameHandler implements HttpHandler {
 				System.out.println("Recieved a start request");
 				System.out.println(request);
 				response = startRequest(exchange, request);
-//				if(request == null || request.optString("url") == null) {
-//					System.out.println("But was invalid");
-//					OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
-//					exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 17);
-//					writer.append("Invalid request !");
-//					writer.close();
-//					exchange.close();
-//					return null;
-//				}
+				//				if(request == null || request.optString("url") == null) {
+				//					System.out.println("But was invalid");
+				//					OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
+				//					exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 17);
+				//					writer.append("Invalid request !");
+				//					writer.close();
+				//					exchange.close();
+				//					return null;
+				//				}
 				return response;
 			case "fire":
 			case "/fire":
@@ -244,26 +244,18 @@ public class GameHandler implements HttpHandler {
 				.GET()
 				.build();
 		System.out.println("shoot ready");
-		try {
-			System.out.println("now waiting for answer");
-			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+		System.out.println("now waiting for answer");
+		client.sendAsync(request, BodyHandlers.ofString()).thenAccept((response) -> {
 			System.out.println("Shoot response : " + response.body());
 			JSONObject obj = new JSONObject(response.body());
 			this.game.attacking(new Point(x, y), !"MISS".equals(obj.getString("consequence")));
-			Thread.sleep(1);
 			if(!obj.getBoolean("shipLeft")) {
 				System.out.println("You won !!!");
 				while(!done.get()) done.set(true);
 				System.out.println("ye");
 				Thread.currentThread().interrupt();
 			}
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-			System.out.println("Game end myself (no dont do that)");
-			while(!done.get()) done.set(true);
-			System.out.println("ye");
-//			Thread.currentThread().interrupt();
-		}
+		});
 		System.out.println("threads = " + Thread.activeCount());
 	}
 
