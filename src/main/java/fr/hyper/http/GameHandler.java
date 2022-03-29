@@ -125,7 +125,6 @@ public class GameHandler implements HttpHandler {
 		int rand = (int) (Math.random() * START_MESSAGE.length);
 		answer.put("message", START_MESSAGE[rand]);
 		answer.put("url", "http://[" + addr.getHostString() + "]:" + addr.getPort());
-		sendStartRequest(url.get(), "http://[" + addr.getHostString() + "]:" + addr.getPort());
 		return answer;
 	}
 
@@ -247,7 +246,7 @@ public class GameHandler implements HttpHandler {
 		System.out.println("shoot ready");
 		try {
 			System.out.println("now waiting for answer");
-			HttpResponse<String> response = client.send(request, BodyHandlers.ofString(Charset.forName("UTF-8")));
+			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 			System.out.println("Shoot response : " + response.body());
 			JSONObject obj = new JSONObject(response.body());
 			this.game.attacking(new Point(x, y), !"MISS".equals(obj.getString("consequence")));
