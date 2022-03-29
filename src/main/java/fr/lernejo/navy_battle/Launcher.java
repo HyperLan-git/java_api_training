@@ -14,7 +14,8 @@ public class Launcher {
 			f.createNewFile();
 			System.setOut(new PrintStream(f));
 			System.setErr(System.out);
-		} catch (IOException e) {
+			Thread.sleep(50);
+		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 		System.out.println(args.length);
