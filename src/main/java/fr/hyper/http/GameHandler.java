@@ -143,12 +143,12 @@ public class GameHandler implements HttpHandler {
 				.setHeader("Content-Type", "application/json")
 				.POST(BodyPublishers.ofString(answer.toString()))
 				.build();
-		client.sendAsync(request, BodyHandlers.ofString(Charset.forName("UTF-8")))/*.thenAccept((response) -> {
+		client.sendAsync(request, BodyHandlers.ofString(Charset.forName("UTF-8"))).thenAccept((response) -> {
 			JSONObject obj = new JSONObject(response.body());
 			System.out.println("after start : " + obj);
 			this.url.set(obj.getString("url"));
 			//Thread.currentThread().interrupt();
-		});*/;
+		});
 	}
 
 	@Override
@@ -204,7 +204,7 @@ public class GameHandler implements HttpHandler {
 				System.out.println("Recieved a start request");
 				System.out.println(request);
 				response = startRequest(exchange, request);
-				if(request.optString("url") == null || response == null) {
+				if(request == null || request.optString("url") == null) {
 					System.out.println("But was invalid");
 					OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
 					exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 17);
