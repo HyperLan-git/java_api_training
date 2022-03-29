@@ -115,7 +115,7 @@ public class GameHandler implements HttpHandler {
 		if (!exchange.getRequestMethod().contentEquals("POST"))
 			return null;
 		if (request == null)
-			this.url.set(exchange.getRemoteAddress().toString().split("/")[1]);
+			this.url.set("http://" + exchange.getRemoteAddress().toString().split("/")[1]);
 		this.done.set(false);
 		this.game.init();
 		JSONObject answer = new JSONObject();
