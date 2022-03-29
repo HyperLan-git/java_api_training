@@ -251,7 +251,7 @@ public class GameHandler implements HttpHandler {
 				.build();
 		System.out.println("shoot ready");
 		System.out.println("now waiting for answer");
-		client.sendAsync(request, BodyHandlers.ofString()).thenAccept((response) -> {
+		/*client.sendAsync(request, BodyHandlers.ofString()).thenAccept((response) -> {
 			System.out.println("Shoot response : " + response.body());
 			JSONObject obj = new JSONObject(response.body());
 			this.game.attacking(new Point(x, y), !"MISS".equals(obj.getString("consequence")));
@@ -260,7 +260,7 @@ public class GameHandler implements HttpHandler {
 				while(!done.get()) done.set(true);
 				System.out.println("ye");
 			}
-		});
+		});*/
 	}
 
 }
