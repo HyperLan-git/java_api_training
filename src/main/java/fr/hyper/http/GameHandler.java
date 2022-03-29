@@ -128,7 +128,7 @@ public class GameHandler implements HttpHandler {
 		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(adversaryURL + "/api/game/start")).setHeader("Accept", "application/json")
 				.setHeader("Content-Type", "application/json").POST(BodyPublishers.ofString(answer.toString())).build();
 		client.sendAsync(request, BodyHandlers.ofString(Charset.forName("UTF-8"))).thenAccept(
-				(response) -> {if(this.url.get() == null)this.url.set(new JSONObject(response.body()).getString("url"));}
+				(response) -> {while (this.url.get() == null) this.url.set(new JSONObject(response.body()).getString("url"));}
 				);
 	}
 }
